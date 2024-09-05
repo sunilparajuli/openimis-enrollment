@@ -95,6 +95,14 @@ Sunil Parajuli - sunilparajuli2002@gmail.com , sunil.parajuli@tinker.com.np
 LinkedIn: [https://www.linkedin.com/in/sunil-parajuli-a49102b7/)
 
 
+
+## Feature Remaining:
+
+- Insuree registration (self, using mobile number) -> can see claim , policy , claim lists, notification
+- Push Notifications
+- Extension of Security feature (RSA) implementation through backend & frontend
+  
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
