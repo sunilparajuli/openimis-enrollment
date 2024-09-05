@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "605290019064",
+    "project_id": "laundry-b8455",
+    "storage_bucket": "laundry-b8455.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605290019064:android:ef1cede6bd2f8f9208a30d",
+        "android_client_info": {
+          "package_name": "np.com.tinker.vacancy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "605290019064-4jeovs4ncv53pt8kslep18pf869tb19d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqXgmr0m_nZlQ2gYKyjd-RINRbl939mD4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "605290019064-4jeovs4ncv53pt8kslep18pf869tb19d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

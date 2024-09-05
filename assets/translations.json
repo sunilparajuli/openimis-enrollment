@@ -1,0 +1,18 @@
+{
+  "fr_FR": {
+    "selected_language": "french",
+    "greeting": "Bonjour",
+    "enrollment": "Enrôlement",
+    "Theme": "थेम",
+    "openimis": "openIMIS",
+    "poverty_status": "État de pauvreté"
+  },
+  "en_US": {
+    "selected_language": "English",
+    "greeting": "Hello",
+    "enrollment": "Enrollment",
+    "theme": "Theme",
+    "openimis": "openIMIS",
+    "poverty_status": "Poverty Status"
+  }
+}
