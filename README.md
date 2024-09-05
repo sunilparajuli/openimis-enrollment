@@ -58,6 +58,7 @@ It's built with the following technologies:
    <img src="assets/screenshots/enrollment_form.png" width="25%">
    <img src="assets/screenshots/offline_enrollment.png" width="25%">
    <img src="assets/screenshots/policy_voucher.png" width="25%">
+    <img src="assets/screenshots/insuree_information.png" width="25%">
    <img src="assets/screenshots/insuree_search.png" width="25%">
   </a>
 
