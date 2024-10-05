@@ -34,7 +34,9 @@ class MenuView extends GetView<RootController> {
             title: "Profile",
             onTap: () => Get.toNamed(Routes.CUSTOMER_PROFILE),
           ),
-          const MenuItem(icon: HeroIcons.bell, title: "Notifications"),
+          MenuItem(icon: HeroIcons.bell,
+              title: "Notifications",
+            onTap: () => Get.toNamed(Routes.NOTICES)),
           Row(
             children: [
               Expanded(

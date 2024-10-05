@@ -91,7 +91,7 @@ class EnrollmentListPage extends StatelessWidget {
                       backgroundImage: imageProvider,
                     ),
                     title: Text(
-                        '${enrollment['givenName']} ${enrollment['lastName']}'),
+                        '${enrollment['chfid']} ${enrollment['sync']}'),
                     subtitle: Text(
                         'CHFID: ${enrollment['chfid']}\nPhone: ${enrollment['phone']}'),
                     trailing: Row(
@@ -117,6 +117,12 @@ class EnrollmentListPage extends StatelessWidget {
                                   controller: controller,
                                   enrollment: enrollment),
                             );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add_box_outlined),
+                          onPressed: () {
+                            controller.confirmAddMember(enrollment['id']);
                           },
                         ),
                       ],

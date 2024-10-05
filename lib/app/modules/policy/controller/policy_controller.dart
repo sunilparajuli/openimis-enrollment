@@ -100,7 +100,7 @@ class PolicyController extends GetxController with SingleGetTickerProviderMixin 
         'enrolledDate': enrolledDateController.text,
       };
 
-      await DatabaseHelper().insertPolicy(policyData);
+     // await DatabaseHelper().insertPolicy(policyData);
       fetchPolicies(); // Refresh policies list
       Get.snackbar('Success', 'Policy saved successfully');
       resetForm();
@@ -117,7 +117,7 @@ class PolicyController extends GetxController with SingleGetTickerProviderMixin 
         'enrolledDate': enrolledDateController.text,
       };
 
-      await DatabaseHelper().insertPolicy(policyData);
+      //await DatabaseHelper().insertPolicy(policyData);
       fetchPolicies(); // Refresh policies list
       Get.snackbar('Offline Save', 'Policy saved offline successfully');
       resetForm();
@@ -125,9 +125,10 @@ class PolicyController extends GetxController with SingleGetTickerProviderMixin 
   }
 
   Future<List<Map<String, dynamic>>> fetchPolicies() async {
-    final List<Map<String, dynamic>> fetchedPolicies = await DatabaseHelper().queryAllPolicies();
-    policies.value = fetchedPolicies; // Update the RxList
-    return fetchedPolicies; // Return the list
+    // final List<Map<String, dynamic>> fetchedPolicies = await DatabaseHelper().queryAllPolicies();
+    // policies.value = fetchedPolicies; // Update the RxList
+    //return fetchedPolicies; // Return the list
+    return [{}];
   }
   @override
   void onClose() {

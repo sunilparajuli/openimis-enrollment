@@ -5,70 +5,79 @@ import 'package:openimis_app/app/modules/enrollment/controller/enrollment_contro
 class FamilyForm extends StatelessWidget {
   final EnrollmentController controller = Get.put(EnrollmentController());
 
+  // Key-value maps for dropdowns
+  final Map<String, String> familyTypeCodes = {
+    "Council": "C",
+    "Organization": "G",
+    "Household": "H",
+    "Other": "O",
+    "Priests": "P",
+    "Students": "S",
+    "Teachers": "T",
+  };
+
+  final Map<String, String> confirmationTypes = {
+    "Local council": "A",
+    "Municipality": "B",
+    "State": "C",
+    "Other": "D",
+  };
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        Section(
-          title: "Family Details",
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 1.0),
+        child: Column(
           children: [
-            buildDropdownFormField(
-              controller.selectedFamilyType,
-              'Select Family Type',
-              [
-                'Council',
-                'Organization',
-                'Household',
-                'Other',
-                'Priests',
-                'Students',
-                'Teachers'
-              ],
-                  (dynamic newValue) {
-                controller.selectedFamilyType.value = newValue;
-              },
-            ),
-            buildDropdownFormField(
-              controller.selectedConfirmationType,
-              'Select Confirmation Type',
-              ['Local council', 'Municipality', 'State', 'Other'],
-                  (dynamic newValue) {
-                controller.selectedConfirmationType.value = newValue;
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Confirmation No',
-                border: OutlineInputBorder(),
-              ),
-              controller: controller.confirmationNumber,
-            ),
-            SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Address Detail',
-                border: OutlineInputBorder(),
-              ),
-              controller: controller.addressDetail,
-            ),
-            SizedBox(height: 10),
-            Obx(() {
-              return Row(
-                children: [
-                  Checkbox(
-                    value: controller.povertyStatus.value,
-                    onChanged: (bool? value) {
+            SizedBox(height: 20),
+            Section(
+              title: "Family Details",
+              children: [
+                buildDropdownFormField(
+                  controller.selectedFamilyType,
+                  'Select Family Type',
+                  familyTypeCodes,
+                      (String? newValue) {
+                    if (newValue != null) {
+                      controller.selectedFamilyType.value = newValue;
+                    }
+                  },
+                ),
+                buildDropdownFormField(
+                  controller.selectedConfirmationType,
+                  'Select Confirmation Type',
+                  confirmationTypes,
+                      (String? newValue) {
+                    if (newValue != null) {
+                      controller.selectedConfirmationType.value = newValue;
+                    }
+                  },
+                ),
+                buildTextFormField(
+                  controller.confirmationNumber,
+                  'Confirmation No',
+                ),
+                SizedBox(height: 10),
+                buildTextFormField(
+                  controller.addressDetail,
+                  'Address Detail',
+                ),
+                SizedBox(height: 10),
+                Obx(() {
+                  return buildCheckbox(
+                    controller.povertyStatus.value,
+                        (bool? value) {
                       controller.povertyStatus.value = value!;
                     },
-                  ),
-                  Expanded(child: Text('poverty_status'.tr)),
-                ],
-              );
-            }),
+                    'poverty_status'.tr,
+                  );
+                }),
+              ],
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 
@@ -76,8 +85,8 @@ class FamilyForm extends StatelessWidget {
   Widget buildDropdownFormField(
       RxString controllerValue,
       String labelText,
-      List<String> items,
-      ValueChanged<dynamic> onChanged,
+      Map<String, String> items,
+      ValueChanged<String?> onChanged,
       ) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -89,14 +98,41 @@ class FamilyForm extends StatelessWidget {
             labelText: labelText,
             border: OutlineInputBorder(),
           ),
-          items: items.map<DropdownMenuItem<String>>((String value) {
+          items: items.keys.map<DropdownMenuItem<String>>((String key) {
             return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
+              value: items[key], // The value will be the code ("C", "G", etc.)
+              child: Text(key), // The display will be the label ("Council", etc.)
             );
           }).toList(),
         );
       }),
+    );
+  }
+
+  // TextFormField Widget
+  Widget buildTextFormField(TextEditingController controller, String labelText) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(),
+        ),
+        controller: controller,
+      ),
+    );
+  }
+
+  // Checkbox Widget
+  Widget buildCheckbox(bool value, ValueChanged<bool?> onChanged, String label) {
+    return Row(
+      children: [
+        Checkbox(
+          value: value,
+          onChanged: onChanged,
+        ),
+        Expanded(child: Text(label)),
+      ],
     );
   }
 }
@@ -113,7 +149,7 @@ class Section extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
+        border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Column(

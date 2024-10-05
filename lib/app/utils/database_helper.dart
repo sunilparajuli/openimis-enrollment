@@ -1,113 +1,129 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+
+import 'dart:convert';
+
+
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
-  DatabaseHelper._internal();
 
   static Database? _database;
 
+  DatabaseHelper._internal();
+
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDatabase();
+    _database = await _initDB();
     return _database!;
   }
 
-  Future<Database> _initDatabase() async {
-    final databasePath = await getDatabasesPath();
-    final path = join(databasePath, 'policy_database.db');
-
-    return openDatabase(
+  Future<Database> _initDB() async {
+    String path = join(await getDatabasesPath(), 'enrollment.db');
+    return await openDatabase(
       path,
-      version: 2,
-      onCreate: _onCreate,
-      onUpgrade: _onUpgrade,
+      version: 2, // Increment the version to trigger the onUpgrade
+      onCreate: (db, version) async {
+        await _createTable(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await _migrateToVersion2(db);
+        }
+      },
     );
   }
 
-  Future<void> _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE policies(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        headInsureeChfid TEXT,
-        receiptNo TEXT,
-        noOfFamily INTEGER,
-        amount INTEGER,
-        enrolledDate TEXT
-      )
-    ''');
-
+  Future<void> _createTable(Database db) async {
     await db.execute('''
       CREATE TABLE enrollments(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        phone TEXT,
-        birthdate TEXT,
-        chfid TEXT,
-        eaCode TEXT,
-        email TEXT,
-        gender TEXT,
-        givenName TEXT,
-        identificationNo TEXT,
-        isHead INTEGER,
-        lastName TEXT,
-        maritalStatus TEXT,
-        headChfid TEXT,
-        newEnrollment INTEGER,
         photo TEXT,
-        remarks TEXT
+        chfid TEXT,
+        json_content TEXT,
+        sync INTEGER
       )
     ''');
   }
 
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('''
-        CREATE TABLE enrollments(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          phone TEXT,
-          birthdate TEXT,
-          chfid TEXT,
-          eaCode TEXT,
-          email TEXT,
-          gender TEXT,
-          givenName TEXT,
-          identificationNo TEXT,
-          isHead INTEGER,
-          lastName TEXT,
-          maritalStatus TEXT,
-          headChfid TEXT,
-          newEnrollment INTEGER,
-          photo TEXT,
-          remarks TEXT
-        )
-      ''');
-    }
+  Future<void> _migrateToVersion2(Database db) async {
+    // Rename the old table
+    await db.execute('ALTER TABLE enrollments RENAME TO enrollments_old;');
+
+    // Create the new table with the updated schema
+    await _createTable(db);
+
+    // Copy data from old table to new table
+    await db.execute('''
+      INSERT INTO enrollments (id, chfid, json_content, sync)
+      SELECT id, chfid, json_content, sync FROM enrollments_old;
+    ''');
+
+    // Drop the old table
+    await db.execute('DROP TABLE enrollments_old;');
   }
 
-  Future<int> insertPolicy(Map<String, dynamic> row) async {
+  Future<void> insertEnrollment(Map<String, dynamic> enrollmentData) async {
     final db = await database;
-    return await db.insert('policies', row);
+
+    // Create the family object
+    Map<String, dynamic> familyData = {
+      'familyType': enrollmentData['familyType'] ?? '',
+      'confirmationType': enrollmentData['confirmationType'] ?? ''
+    };
+
+    // Create the members array
+    List<Map<String, dynamic>> membersData = [
+      {
+        'phone': enrollmentData['phone'] ?? '',
+        'birthdate': enrollmentData['birthdate'] ?? '',
+        'chfid': enrollmentData['chfid'] ?? '',
+        'eaCode': enrollmentData['eaCode'] ?? '',
+        'email': enrollmentData['email'] ?? '',
+        'gender': enrollmentData['gender'] ?? '',
+        'givenName': enrollmentData['givenName'] ?? '',
+        'identificationNo': enrollmentData['identificationNo'] ?? '',
+        'isHead': enrollmentData['isHead'] ?? 0,
+        'lastName': enrollmentData['lastName'] ?? '',
+        'maritalStatus': enrollmentData['maritalStatus'] ?? '',
+        'headChfid': enrollmentData['headChfid'] ?? '',
+        'newEnrollment': enrollmentData['newEnrollment'] ?? 0,
+        'photo': enrollmentData['photo'] ?? '',
+        'remarks': enrollmentData['remarks'] ?? '',
+        'healthFacilityLevel': enrollmentData['healthFacilityLevel'] ?? '',
+        'healthFacility': enrollmentData['healthFacility'] ?? '',
+        'relationShip': enrollmentData['relationShip'] ?? ''
+      }
+    ];
+
+    // Combine family and members into a single data structure
+    Map<String, dynamic> structuredData = {
+      'family': familyData,
+      'members': membersData
+    };
+
+    // Convert structured data to JSON string
+    String jsonContent = jsonEncode(structuredData);
+
+    // Prepare data for insertion into the database
+    Map<String, dynamic> row = {
+      'chfid': enrollmentData['chfid'],
+      'photo': enrollmentData['photo'],
+      'json_content': jsonContent,
+      'sync': 0 // Assuming false for initial save
+    };
+
+    await db.insert('enrollments', row);
   }
 
-  Future<int> insertEnrollment(Map<String, dynamic> row) async {
+  Future<List<Map<String, dynamic>>> retrieveAllEnrollments() async {
     final db = await database;
-    try {
-      return await db.insert('enrollments', row);
-    } catch (e) {
-      print('Error inserting into enrollments: $e');
-      return -1; // return -1 to indicate failure
-    }
-  }
+    // Fetch all records from the enrollments table
+    List<Map<String, dynamic>> result = await db.query('enrollments');
+    print(result);
 
-  Future<List<Map<String, dynamic>>> queryAllPolicies() async {
-    final db = await database;
-    return await db.query('policies');
-  }
-
-  Future<List<Map<String, dynamic>>> queryAllEnrollments() async {
-    final db = await database;
-    return await db.query('enrollments');
+    return result;
   }
 
   Future<int> deleteEnrollment(int id) async {
@@ -115,28 +131,20 @@ class DatabaseHelper {
     return await db.delete('enrollments', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<Map<String, dynamic>?> queryEnrollmentByChfid(String chfid) async {
+  Future<Map<String, dynamic>?> getEnrollmentById(int id) async {
     final db = await database;
-    final result = await db.query(
+    final List<Map<String, dynamic>> maps = await db.query(
       'enrollments',
-      where: 'chfid = ?',
-      whereArgs: [chfid],
+      where: 'id = ?',
+      whereArgs: [id],
     );
 
-    if (result.isNotEmpty) {
-      return result.first;
+    if (maps.isNotEmpty) {
+      return maps.first;
     } else {
-      return null;
+      return null; // Return null if no record is found
     }
   }
-
-  Future<void> updateEnrollment(Map<String, dynamic> enrollment) async {
-    final db = await database;
-    await db.update(
-      'enrollments',
-      enrollment,
-      where: 'chfid = ?', // Use `chfid` to identify the enrollment
-      whereArgs: [enrollment['id']],
-    );
-  }
 }
+
+

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:openimis_app/app/modules/root/views/widgets/notices.dart';
 
 
 import '../modules/Organization/bindings/company_profile_binding.dart';
@@ -81,6 +82,9 @@ class AppPages {
       name: _Paths.PARTNERS,
       page: () =>  PartnersPage(),
     ),
-
+    GetPage(
+      name: _Paths.NOTICES,
+      page: () =>  NoticesPage(),
+    ),
   ];
 }

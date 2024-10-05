@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:openimis_app/app/language/languages.dart';
+import 'package:openimis_app/app/modules/root/controllers/root_controller.dart';
 
 import 'app/core/theme/app_theme.dart';
 import 'app/core/theme/theme_service.dart';
@@ -50,9 +51,13 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  // Fetch app config and initialize BASE_URL
-  final authController = Get.put(AuthController());
-  await authController.getAppConfig;
+  Get.put(AuthController());
+  final rootController = Get.put(RootController());
+  await Future.delayed(Duration(milliseconds: 100));
+  await rootController.fetchConfigurations(); // Fetch configurations here
+  await rootController.fetchSupportedPartners();
+
+
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 812),

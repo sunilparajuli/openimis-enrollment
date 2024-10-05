@@ -11,7 +11,10 @@ import '../../controller/enrollment_controller.dart';
 import 'health_service_provider.dart';
 
 class EnrollmentForm extends StatelessWidget {
+  final int? enrollmentId;
   final EnrollmentController controller = Get.put(EnrollmentController());
+
+  EnrollmentForm({this.enrollmentId});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,10 @@ class EnrollmentForm extends StatelessWidget {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text('new_enrollment'.tr),
+                    if (enrollmentId != null)
+                      Text('Editing enrollment with ID: $enrollmentId'),
+                    if (enrollmentId == null)
+                      Text('new_enrollment'.tr),
                     Switch(
                       value: controller.newEnrollment.value,
                       onChanged: (value) {
@@ -192,7 +198,9 @@ class EnrollmentForm extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            FamilyForm(),
+
+                            if(enrollmentId==null)
+                              FamilyForm(),
                           ],
                         ))
                     : Text("");

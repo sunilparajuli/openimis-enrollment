@@ -23,14 +23,16 @@ class RootController extends GetxController {
 
   Status get configStatus => _configStatus.value;
 
+  var notices = <Map<String, String>>[].obs;
+
   RxList<Map<String, String>> supportedPartners = <Map<String, String>>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchConfigurations();
-    //fetchSupportedPartners(); // Fetch supported partners separately
-
+    fetchSupportedPartners();
+    fetchDummyNotices();
   }
 
   @override
@@ -48,6 +50,31 @@ class RootController extends GetxController {
     HomeController.to.animateToStart();
   }
 
+  // Method to fetch dummy notices
+  void fetchDummyNotices() {
+    notices.value = [
+      {
+        'title': 'System Maintenance',
+        'description': 'Our system will undergo maintenance on 25th September from 12:00 AM to 2:00 AM.',
+        'date': '2024-09-20',
+      },
+      {
+        'title': 'New Policy Update',
+        'description': 'We have updated our insurance policies. Please review the changes on the policy page.',
+        'date': '2024-09-18',
+      },
+      {
+        'title': 'Holiday Notice',
+        'description': 'Our office will remain closed on 1st October due to a public holiday.',
+        'date': '2024-09-15',
+      },
+      {
+        'title': 'Insurance Claim Process Change',
+        'description': 'We have simplified the claim process. Kindly refer to the updated steps on our website.',
+        'date': '2024-09-10',
+      },
+    ];
+  }
   void onSearchDoubleClick() {
     CSearchController.to.clear();
   }
@@ -60,7 +87,7 @@ class RootController extends GetxController {
     );
   }
 
-  void fetchConfigurations() async {
+  Future<void> fetchConfigurations() async { // Change return type to Future<void>
     _configStatus.value = Status.loading();
     try {
       final configStatus = await _rootRepository.fetchConfig();
@@ -88,7 +115,8 @@ class RootController extends GetxController {
     }
   }
 
-  void fetchSupportedPartners() async {
+
+  Future<void> fetchSupportedPartners() async {
     try {
       final configData = await _storage.read('configurations') as Map<String, dynamic>?;
       if (configData != null) {

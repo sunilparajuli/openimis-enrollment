@@ -18,6 +18,7 @@ class DioInterceptor extends Interceptor {
     }
 
     logger.d("On new Request");
+    logger.d("On new \n ${options.uri.path}");
     logger.i("Headers: \n${options.headers.toString()}");
     super.onRequest(options, handler);
   }

@@ -239,8 +239,7 @@ class AuthController extends GetxController {
             id: data!.username,
             email: data.email,
             name: "${data.firstName}  ${data.lastName}",
-            // token: data.token!.access,
-            token: data!.access,
+            token: data.access,
             role: data.userType,
             refresh: data.refresh);
         storage.write('loginUsername', loginEmailController.text);

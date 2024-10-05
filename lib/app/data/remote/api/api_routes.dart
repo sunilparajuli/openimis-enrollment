@@ -15,7 +15,6 @@ class ApiRoutes {
   static const LOGIN = "$_API/login";
   static const CUSTOMERS = "$_API/profile";
   static const TOGGLE_SAVE = "$CUSTOMERS/save/";
-
-
-
+  static const NOTICES = "$_API/notices";
+  //NoticesPage
 }

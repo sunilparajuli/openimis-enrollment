@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:openimis_app/app/data/remote/repositories/enrollment/enrollment_repository.dart';
@@ -15,8 +16,11 @@ import '../../../di/locator.dart';
 import '../../../utils/database_helper.dart';
 import '../../../utils/functions.dart';
 import '../../../widgets/snackbars.dart';
+import '../views/widgets/enrollment_form.dart';
+import '../views/widgets/enrollment_members.dart';
 import '../views/widgets/qr_view.dart';
 import '../views/widgets/submit_botton_sheet.dart';
+import 'DropdownDto.dart';
 import 'EnrollmentDto.dart';
 import 'HospitalDto.dart';
 
@@ -93,13 +97,6 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
   }
 
 
-
-
-
-
-
-
-
   final Rx<Status<List<LocationDto>>> _rxLocationState = Rx(const Status.idle());
 
   Status<List<LocationDto>> get locationState => _rxLocationState.value;
@@ -107,7 +104,6 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
   final Rx<Status<List<HealthServiceProvider>>> _rxHospitalState = Rx(const Status.idle());
 
   Status<List<HealthServiceProvider>> get hospitalState => _rxHospitalState.value;
-
 
 
 
@@ -140,6 +136,37 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
     debounce(searchText, (_) => filterEnrollments(),
         time: Duration(milliseconds: 300));
   }
+
+
+  var familyTypeCodes = <FamilyType>[].obs;
+  var confirmationTypes = <ConfirmationType>[].obs;
+  final GetStorage _storage = GetStorage(); // Use GetStorage for local storage
+
+
+  Future<void> fetchConfigData() async {
+    try {
+      final configData = await _storage.read('configurations') as Map<String, dynamic>?;
+      if (configData != null) {
+        // Retrieve family_type_codes
+        final familyTypes = configData['family_type_codes'] as Map<String, dynamic>;
+        familyTypeCodes.value = familyTypes.entries
+            .map((entry) => FamilyType(name: entry.key, code: entry.value))
+            .toList();
+
+        // Retrieve confirmation_types
+        final confirmationTypesData = configData['confirmation_types'] as Map<String, dynamic>;
+        confirmationTypes.value = confirmationTypesData.entries
+            .map((entry) => ConfirmationType(name: entry.key, code: entry.value))
+            .toList();
+      }
+    } catch (e) {
+      print('Error reading config data: $e');
+      familyTypeCodes.value = [];
+      confirmationTypes.value = [];
+    }
+  }
+
+
 
   Future<void> getAllLocations() async {
     final Status<List<LocationDto>> state = await _enrollmentRepository.getLocations();
@@ -191,8 +218,8 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
 
   Future<void> fetchEnrollments() async {
     final dbHelper = DatabaseHelper();
-    final data = await dbHelper.queryAllEnrollments();
-    enrollments.value = data;
+    final data = await dbHelper.retrieveAllEnrollments();
+    enrollments.value =  data;
     filterEnrollments();
     print('Fetched enrollments: ${enrollments.length}');
   }
@@ -213,116 +240,130 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
     newEnrollment.value = enrollment['newEnrollment'] == 1;
   }
 
+
   Future<void> updateEnrollment(enrollment) async {
     final dbHelper = DatabaseHelper();
-    final existingEnrollment = await dbHelper.queryEnrollmentByChfid(
-        chfidController.text);
-
-    if (existingEnrollment != null &&
-        existingEnrollment['id'] != enrollment['id']) {
-      SnackBars.failure("Error", "CHFID already exists.");
-      return;
-    }
-
-    final updatedData = {
-      'phone': phoneController.text,
-      'birthdate': birthdateController.text,
-      'chfid': chfidController.text,
-      'eaCode': eaCodeController.text,
-      'email': emailController.text,
-      'gender': gender.value,
-      'givenName': givenNameController.text,
-      'identificationNo': identificationNoController.text,
-      'isHead': isHead.value ? 1 : 0,
-      'lastName': lastNameController.text,
-      'maritalStatus': maritalStatus.value,
-      'headChfid': headChfidController.text,
-      'newEnrollment': newEnrollment.value ? 1 : 0,
-    };
-
-    await dbHelper.updateEnrollment(updatedData);
-    fetchEnrollments();
-    SnackBars.success("Success", "Enrollment updated successfully.");
+    return;
+    // final existingEnrollment = await dbHelper. .queryEnrollmentByChfid(
+    //     chfidController.text);
+    //
+    // if (existingEnrollment != null &&
+    //     existingEnrollment['id'] != enrollment['id']) {
+    //   SnackBars.failure("Error", "CHFID already exists.");
+    //   return;
+    // }
+    //
+    // final updatedData = {
+    //   'phone': phoneController.text,
+    //   'birthdate': birthdateController.text,
+    //   'chfid': chfidController.text,
+    //   'eaCode': eaCodeController.text,
+    //   'email': emailController.text,
+    //   'gender': gender.value,
+    //   'givenName': givenNameController.text,
+    //   'identificationNo': identificationNoController.text,
+    //   'isHead': isHead.value ? 1 : 0,
+    //   'lastName': lastNameController.text,
+    //   'maritalStatus': maritalStatus.value,
+    //   'headChfid': headChfidController.text,
+    //   'newEnrollment': newEnrollment.value ? 1 : 0,
+    // };
+    //
+    // await dbHelper.updateEnrollment(updatedData);
+    // fetchEnrollments();
+    // SnackBars.success("Success", "Enrollment updated successfully.");
   }
 
   Future<void> onEnrollmentSubmit({bool offlineTrue = true}) async {
+    try {
+      _rxEnrollmentState.value = Status.loading();
 
-    _rxEnrollmentState.value = Status.loading();
+      handleNewEnrollmentChange(newEnrollment.value);
 
-    handleNewEnrollmentChange(newEnrollment.value);
+      final dbHelper = DatabaseHelper();
+      //final existingEnrollment = '1';
+      //await dbHelper.queryEnrollmentByChfid(
+      //    chfidController.text);
 
-    final dbHelper = DatabaseHelper();
-    final existingEnrollment = await dbHelper.queryEnrollmentByChfid(
-        chfidController.text);
+      // if (existingEnrollment != null) {
+      //   SnackBars.failure("Error", "CHFID already exists.");
+      //   return;
+      // }
 
-    if (existingEnrollment != null) {
-      SnackBars.failure("Error", "CHFID already exists.");
-      return;
-    }
-
-    String? photoBase64;
-    if (photo.value != null) {
-      photoBase64 = await _encodePhotoToBase64(photo.value!);
-    }
-
-    final enrollmentData = {
-      'phone': phoneController.text,
-      'birthdate': birthdateController.text,
-      'chfid': chfidController.text,
-      'eaCode': eaCodeController.text,
-      'email': emailController.text,
-      'gender': gender.value,
-      'givenName': givenNameController.text,
-      'identificationNo': identificationNoController.text,
-      'isHead': isHead.value ? 1 : 0,
-      'lastName': lastNameController.text,
-      'maritalStatus': maritalStatus.value,
-      'headChfid': headChfidController.text,
-      'newEnrollment': newEnrollment.value ? 1 : 0,
-      'photo': photoBase64 ?? "",
-      'remarks': "",
-    };
-
-    if (offlineTrue) {
-      await dbHelper.insertEnrollment(enrollmentData);
-      SnackBars.success("Success", "Enrollment saved locally.");
-      fetchEnrollments();
-    } else {
-      final response = await _enrollmentRepository.create(
-        dto: EnrollmentDto(
-          phone: phoneController.text,
-          birthdate: birthdateController.text,
-          chfid: chfidController.text,
-          eaCode: eaCodeController.text,
-          email: emailController.text,
-          gender: gender.value,
-          givenName: givenNameController.text,
-          identificationNo: identificationNoController.text,
-          isHead: isHead.value,
-          lastName: lastNameController.text,
-          maritalStatus: maritalStatus.value,
-          headChfid: headChfidController.text,
-          newEnrollment: newEnrollment.value,
-          photo: photoBase64 ?? "",
-          healthFacilityLevel: selectedHealthFacilityLevel.value,
-          healthFacility: selectedHealthFacility.value,
-          familyType: selectedFamilyType.value,
-          confirmationType: selectedConfirmationType.value,
-          confirmationNumber: confirmationNumber.text,
-          addressDetail: addressDetail.text,
-          relationShip : relationShip.value
-
-        ),
-      );
-      if (!response.error) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        resetForm();
-        Get.back();
-        _rxEnrollmentState.value = Status.idle();
-        popupBottomSheet(bottomSheetBody: const SubmitBottomSheet());
-      } else {
-        SnackBars.failure("Oops!", response.message);
+      String? photoBase64;
+      if (photo.value != null) {
+        photoBase64 = await _encodePhotoToBase64(photo.value!);
       }
+
+      final enrollmentData = {
+        'phone': phoneController.text,
+        'birthdate': birthdateController.text,
+        'chfid': chfidController.text,
+        'eaCode': eaCodeController.text,
+        'email': emailController.text,
+        'gender': gender.value,
+        'givenName': givenNameController.text,
+        'identificationNo': identificationNoController.text,
+        'isHead': isHead.value ? 1 : 0,
+        'lastName': lastNameController.text,
+        'maritalStatus': maritalStatus.value,
+        'headChfid': headChfidController.text,
+        'newEnrollment': newEnrollment.value ? 1 : 0,
+        'photo': photoBase64 ?? "",
+        'remarks': "",
+        // Additional fields to save
+        'healthFacilityLevel': selectedHealthFacilityLevel.value,
+        'healthFacility': selectedHealthFacility.value,
+        'familyType': selectedFamilyType.value,
+        'confirmationType': selectedConfirmationType.value,
+        'confirmationNumber': confirmationNumber.text,
+        'addressDetail': addressDetail.text,
+        'relationShip': relationShip.value,
+      };
+
+      if (offlineTrue) {
+        await dbHelper.insertEnrollment(enrollmentData);
+        SnackBars.success("Success", "Enrollment saved locally.");
+        fetchEnrollments();
+      } else {
+        final response = await _enrollmentRepository.create(
+          dto: EnrollmentDto(
+            phone: phoneController.text,
+            birthdate: birthdateController.text,
+            chfid: chfidController.text,
+            eaCode: eaCodeController.text,
+            email: emailController.text,
+            gender: gender.value,
+            givenName: givenNameController.text,
+            identificationNo: identificationNoController.text,
+            isHead: isHead.value,
+            lastName: lastNameController.text,
+            maritalStatus: maritalStatus.value,
+            headChfid: headChfidController.text,
+            newEnrollment: newEnrollment.value,
+            photo: photoBase64 ?? "",
+            healthFacilityLevel: selectedHealthFacilityLevel.value,
+            healthFacility: selectedHealthFacility.value,
+            familyType: selectedFamilyType.value,
+            confirmationType: selectedConfirmationType.value,
+            confirmationNumber: confirmationNumber.text,
+            addressDetail: addressDetail.text,
+            relationShip: relationShip.value,
+          ),
+        );
+        if (!response.error) {
+          FocusManager.instance.primaryFocus?.unfocus();
+          resetForm();
+          Get.back();
+          popupBottomSheet(bottomSheetBody: const SubmitBottomSheet());
+        } else {
+          SnackBars.failure("Oops!", response.message);
+        }
+      }
+    } catch (error) {
+      SnackBars.failure("Error", "An error occurred: $error");
+    } finally {
+      _rxEnrollmentState.value = Status.idle();
     }
   }
 
@@ -437,10 +478,31 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
   void showSnackBarOnFailure(String? err) {
     Get.closeAllSnackbars();
     SnackBars.failure("Oops!", err.toString());
+    _rxEnrollmentState.value = Status.idle();
   }
 
 
+  Future<void> confirmAddMember(int enrollmentId) async {
+    Get.defaultDialog(
+        title: "Add Member",
+        middleText: "Are you sure you want to add a new member?",
+        textCancel: "No",
+        textConfirm: "Yes",
+        confirmTextColor: Colors.white,
+        onConfirm: () {
+          Get.back();  // Close the dialog
+          openMemberForm(enrollmentId); // Call the form creation logic
+        }
+    );
+  }
 
+  void openMemberForm(int enrollmentId) {
+    // Set newEnrollment to true and update the form as needed
+    newEnrollment.value = false;
+    isHead.value = false; // Set default to false if needed
+    // Pass enrollmentId to update in database later when saved
+    Get.to(() => EnrollmentDetailsPage(enrollmentId: enrollmentId));
+  }
 
   @override
   void onClose() {
@@ -455,3 +517,5 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
     super.onClose();
   }
 }
+
+
