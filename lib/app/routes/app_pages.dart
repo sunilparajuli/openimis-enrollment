@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:openimis_app/app/modules/root/views/widgets/notices.dart';
 
 
+import '../modules/Insuree/views/insuree_profile.dart';
+import '../modules/Insuree/views/insuree_profile_details.dart';
+import '../modules/Insuree/views/profile_body.dart';
 import '../modules/Organization/bindings/company_profile_binding.dart';
 import '../modules/Organization/views/company_profile_view.dart';
 import '../modules/auth/bindings/auth_binding.dart';
@@ -13,6 +16,7 @@ import '../modules/enrollment/bindings/enrollment_binding.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/enrollment/views/enrollment_view.dart';
+import '../modules/public_enrollment/views/public_enrollment_view.dart';
 import '../modules/root/bindings/root_binding.dart';
 import '../modules/root/views/root_view.dart';
 import '../modules/root/views/widgets/partners.dart';
@@ -85,6 +89,17 @@ class AppPages {
     GetPage(
       name: _Paths.NOTICES,
       page: () =>  NoticesPage(),
+    ),
+    GetPage(
+      name: _Paths.PUBLIC_ENROLLMENT,
+      page: () =>  PublicEnrollmentView(),
+
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () =>  ProfileView(),
+      binding: CustomerProfileBinding(),
+
     ),
   ];
 }

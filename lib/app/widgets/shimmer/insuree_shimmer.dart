@@ -12,7 +12,7 @@ class InsureeShimmer extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 5.w),
         margin: EdgeInsets.only(bottom: 2.w),
         child: ShimmerWidget(
           width: double.infinity,

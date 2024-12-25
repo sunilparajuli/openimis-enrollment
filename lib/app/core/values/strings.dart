@@ -14,6 +14,7 @@ class AppStrings {
   static const emailLabel = "Username";
   static const password = "Password";
   static const biometricSignIn = "Fingerprint";
+  static const userName = "Username";
 
   /*
   * Register Strings

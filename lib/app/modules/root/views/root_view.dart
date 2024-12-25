@@ -7,6 +7,7 @@ import 'package:heroicons/heroicons.dart';
 import 'package:openimis_app/app/modules/enrollment/views/enrollment_view.dart';
 import 'package:openimis_app/app/widgets/shimmer/insuree_shimmer.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import '../../Insuree/views/claim_view.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../home/views/home_view.dart';
 import '../../policy/views/policy_view.dart';
@@ -18,6 +19,7 @@ class RootView extends GetView<RootController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(AuthController());
     return Scaffold(
       drawer: Drawer(
         width: 0.65.sw,
@@ -79,6 +81,28 @@ class RootView extends GetView<RootController> {
   }
 
   List<Widget> _getNavBarScreens() {
+    if (AuthController.to.isInsuree()) {
+      return _getInsureeNavBarScreens();
+    } else if (AuthController.to.isOfficer()) {
+      return _getOfficerNavBarScreens();
+    }
+    // Fallback or default in case of undefined roles
+    return _getDefaultNavBarScreens();
+  }
+
+
+  List<Widget> _getInsureeNavBarScreens() {
+    return [
+      HomeView(),
+      SearchView(),
+      ClaimView()
+      //PolicyView(),
+      //SearchView(),
+    ];
+  }
+
+
+  List<Widget> _getOfficerNavBarScreens() {
     return [
       HomeView(),
       EnrollmentView(),
@@ -88,30 +112,49 @@ class RootView extends GetView<RootController> {
   }
 
   List<PersistentBottomNavBarItem> _getNavBarItems() {
+    if (AuthController.to.isInsuree()) {
+      return _getInsureeNavBarItems();
+    } else if (AuthController.to.isOfficer()) {
+      return _getOfficerNavBarItems();
+    }
+    // Fallback or default in case of undefined roles
+    return _getDefaultNavBarItems();
+  }
+
+  List<PersistentBottomNavBarItem> _getInsureeNavBarItems() {
     return [
       _getNavBarItem(
         "Home",
         HeroIcons.home,
             () => controller.onHomeDoubleClick(),
       ),
-      AuthController.to.isFaculty()
-          ? _getNavBarItem(
+      _getNavBarItem(
+        "Family",
+        HeroIcons.users,
+            () => controller.onSearchDoubleClick(),
+      ),
+      _getNavBarItem(
+        "Claims",
+        HeroIcons.bars3,
+            () => controller.onSearchDoubleClick(),
+      )
+
+    ];
+  }
+
+  List<PersistentBottomNavBarItem> _getOfficerNavBarItems() {
+    return [
+      _getNavBarItem(
         "Search",
         HeroIcons.magnifyingGlass,
             () => controller.onSearchDoubleClick(),
-      )
-          : _getNavBarItem(
-        "Add",
+      ),
+      _getNavBarItem(
+        "Enrollment",
         HeroIcons.userGroup,
             () => controller.onSearchDoubleClick(),
       ),
-      AuthController.to.isFaculty()
-          ? _getNavBarItem(
-        "Saved",
-        HeroIcons.bookmark,
-            () => controller.onSavedDoubleClick(),
-      )
-          : _getNavBarItem(
+      _getNavBarItem(
         "Policy",
         HeroIcons.identification,
             () => controller.onSearchDoubleClick(),
@@ -120,10 +163,45 @@ class RootView extends GetView<RootController> {
         "Search Insuree",
         HeroIcons.magnifyingGlass,
             () => controller.onSearchDoubleClick(),
-      )
+      ),
     ];
   }
 
+  // Optional default nav bar in case of no valid user type
+  List<Widget> _getDefaultNavBarScreens() {
+    return [
+      HomeView(),
+      SearchView(),
+      PolicyView(),
+      SearchView(),
+    ];
+  }
+
+
+  List<PersistentBottomNavBarItem> _getDefaultNavBarItems() {
+    return [
+      _getNavBarItem(
+        "Home",
+        HeroIcons.home,
+            () => controller.onHomeDoubleClick(),
+      ),
+      _getNavBarItem(
+        "Search",
+        HeroIcons.magnifyingGlass,
+            () => controller.onSearchDoubleClick(),
+      ),
+      _getNavBarItem(
+        "Policy",
+        HeroIcons.identification,
+            () => controller.onSearchDoubleClick(),
+      ),
+      _getNavBarItem(
+        "Search Insuree",
+        HeroIcons.magnifyingGlass,
+            () => controller.onSearchDoubleClick(),
+      ),
+    ];
+  }
   PersistentBottomNavBarItem _getNavBarItem(
       String title,
       HeroIcons icon,

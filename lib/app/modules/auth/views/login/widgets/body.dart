@@ -38,7 +38,7 @@ class Body extends GetView<AuthController> {
               ),
               SizedBox(height: 20.h),
               // Add some spacing between the logo and the header
-              const Header(title: AppStrings.welcomeBack),
+              Header(title: "login_to_your_account".tr),
               SizedBox(height: 30.h),
               const LoginForm(),
               SizedBox(height: 50.h),
@@ -85,6 +85,7 @@ class Body extends GetView<AuthController> {
                     : const SizedBox
                         .shrink(); // If biometric is not enabled, leave the space empty
               }),
+
             ],
           ),
         )

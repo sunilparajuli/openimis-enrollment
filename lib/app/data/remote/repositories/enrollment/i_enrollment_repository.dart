@@ -18,6 +18,8 @@ abstract class IEnrollmentRepository<T> {
 
   Future<Status<T>> get({required String uuid});
 
+  Future<ApiResponse> enrollmentSubmit(dynamic data);
+
   Future<Status<MemberShipCard>> getMembershipCard({required String uuid});
 
   Future<Status<List<T>>?> getAll({

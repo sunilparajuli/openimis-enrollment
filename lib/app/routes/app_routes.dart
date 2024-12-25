@@ -13,6 +13,7 @@ abstract class Routes {
   static const CUSTOMER_PROFILE = _Paths.CUSTOMER_PROFILE;
   static const OTP = _Paths.OTP;
   static const NOTICES = _Paths.NOTICES;
+  static const PROFILE = _Paths.PROFILE;
 }
 
 abstract class _Paths {
@@ -23,6 +24,7 @@ abstract class _Paths {
   static const REGISTER = '/register';
   static const WAITTING = '/waiting';
   static const ENROLLMENT = '/enrollment';
+  static const PUBLIC_ENROLLMENT = '/public-enrollment';
   static const SEARCH = '/search';
   static const SAVED = '/saved';
   static const COMPANY_PROFILE = '/company-profile';
@@ -31,5 +33,5 @@ abstract class _Paths {
   static const OTP = '/otp';
   static const PARTNERS = '/partners';
   static const NOTICES = '/notices';
-
+  static const PROFILE = '/profile';
 }

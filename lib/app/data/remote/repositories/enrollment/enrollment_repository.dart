@@ -128,6 +128,23 @@ class EnrollmentRepository implements IEnrollmentRepository<EnrollmentInDto> {
     }
   }
 
+  @override
+  Future<ApiResponse> enrollmentSubmit(data)  async{
+
+    try {
+      final response = await service.enrollmentR(data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ApiResponse.success(true, message: "Enrollment successful.");
+      }
+      return ApiResponse.failure(response.data['message']);
+    } on DioError catch (e) {
+      if (e.response != null && e.response!.data != null) {
+        return ApiResponse.failure(e.response!.data['message']);
+      }
+      return ApiResponse.failure(e.message);
+    }
+  }
+
 
 
 

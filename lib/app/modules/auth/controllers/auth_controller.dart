@@ -24,12 +24,21 @@ import '../../../domain/enums/user_type.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/functions.dart';
 import '../../../widgets/snackbars.dart';
+import '../../enrollment/views/widgets/submit_botton_sheet.dart';
 import '../views/login/widgets/choose_bottom_sheet.dart';
 
 class AuthController extends GetxController {
   final LocalAuthentication auth = LocalAuthentication();
   final GetStorage storage = GetStorage();
+
+
+  var isFirstTime = true.obs;
+
+
   var isBiometricEnabled = false.obs;
+
+  var isCheckingUsername = false.obs;
+  var usernameExists = false.obs;
 
   static AuthController get to => Get.find();
   final _authRepository = getIt.get<AuthRepository>();
@@ -40,9 +49,14 @@ class AuthController extends GetxController {
   * */
   final GlobalKey<FormState> customerFormKey = GlobalKey<FormState>();
   final customerFullNameController = TextEditingController();
-  final customerPhoneNumController = TextEditingController();
-  final customerEmailController = TextEditingController();
-  final customerPasswordController = TextEditingController();
+  final customerChfidController = TextEditingController(text: '045802525');
+  final customerUsernameController = TextEditingController();
+  final customerHeadChfidController = TextEditingController(text: '048651094');
+  final customerPhoneNumberController = TextEditingController(text: '9843317526');
+  final customerConfirmPasswordController = TextEditingController(text: 'Apple@12345');
+  final customerEmailController = TextEditingController(text: 'kadl.invoker@gmail.com');
+  final customerPasswordController = TextEditingController(text: 'Apple@12345');
+  dynamic  customerOTPController = TextEditingController();
 
   /*
   * Company Form Fields
@@ -59,6 +73,7 @@ class AuthController extends GetxController {
   final Rx<Status> _configStatus = Rx(const Status.idle());
 
   Status get configStatus => _configStatus.value;
+  final RxBool isFormValid = false.obs;
 
 
   /*
@@ -104,6 +119,15 @@ class AuthController extends GetxController {
 
   Status<LoginOutDto> get loginState => _rxLoginState.value;
 
+
+  final Rx<Status> _rxCustomerRegisterState = Rx(const Status.idle());
+
+  Status get registerState => _rxCustomerRegisterState.value;
+
+  final Rx<Status> _rxcustomerOtpVerifyState = Rx(const Status.idle());
+
+  Status get otpVerifyState => _rxcustomerOtpVerifyState.value;
+
   final RxBool _rxIsObscure = RxBool(true);
 
   bool get isObscure => _rxIsObscure.value;
@@ -113,23 +137,126 @@ class AuthController extends GetxController {
   RegisterType get registerType => _rxRegisterType.value;
 
 
+  final Rx<Status> _rxUsernameVerify = Rx(const Status.idle());
+
+  Status get usernameVerify => _rxUsernameVerify.value;
+
   // OTP
   var isVerified = false.obs;
   var canResend = false.obs;
   var timeLeft = 60.obs;
+  var isResend = false.obs;
 
 
-  void verifyOtp(String otp) {
-    // Perform OTP verification here
-    // For now, let's just simulate a success response
-    Future.delayed(Duration(seconds: 2), () {
-      isVerified.value = true;
-    });
+  void updateIsFirstTime(bool value) {
+    isFirstTime.value = value;
+    storage.write('isFirstTime', value);  // Save to storage
+  }
+  Future<void> verifyOtp() async {
+    _rxcustomerOtpVerifyState.value = Status.loading();
+    Map<String, dynamic> data = {
+      "phone": customerPhoneNumberController.value.text,
+      "otp": customerOTPController.value.text,
+      "username": customerUsernameController.value.text,
+      "password": customerConfirmPasswordController.value.text,
+      "email": customerEmailController.value.text ?? "test-gmail@g.com",
+    };
+
+    final response = await _authRepository.insureeOTPValidation(data);
+    if (!response.error) {
+      _rxcustomerOtpVerifyState.value = Status.success(data: response.data);
+      FocusManager.instance.primaryFocus?.unfocus();
+      resetData();
+      popupBottomSheet(
+        bottomSheetBody: await Get.bottomSheet(
+          SubmitBottomSheet(
+
+            titleText: "Registration Completed",
+            descriptionText: "You can view the details on the dashboard.",
+            buttonText: "Login",
+            onTap: () async {
+              // Custom async logic
+              await Get.offAllNamed(Routes.LOGIN);
+            },
+          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.white, // Set background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20.0), // Add rounded corners to the top
+            ),
+          ),
+          isDismissible: false, // Prevent dismiss by tapping outside
+          enableDrag: true,
+        ),
+      );
+    } else {
+      _rxcustomerOtpVerifyState.value = Status.failure(reason: "reason");
+      SnackBars.failure("Oops!", response.message);
+    }
+  }
+
+  Future<void> resendOtpForVerify() async{
+    _rxcustomerOtpVerifyState.value=Status.loading();
+    Map<String, dynamic> data = {
+      "phone": customerPhoneNumberController.value.text,
+    };
+    final response = await _authRepository.insureeOTPResend(data);
+    if (!response.error) {
+      isResend.value = true;
+      SnackBars.success("Success!", response.message);
+
+    } else {
+      SnackBars.failure("Oops!", response.message);
+    }
+  }
+
+  void validateForm() {
+    isFormValid.value = customerFormKey.currentState?.validate() ?? false;
+  }
+
+  void verifyInsuree() async{
+    _rxCustomerRegisterState.value = Status.loading();
+    Map<String, dynamic> data = {
+      "chfid": customerChfidController.value.text,
+      "head_chfid": customerHeadChfidController.value.text,
+      "dob": "2024-03-24",
+      "phone": customerPhoneNumberController.value.text,
+      "email": customerEmailController.value.text ?? "test-gmail@g.com",
+    };
+    final response = await _authRepository.insureeValidation(data);
+    if (!response.error) {
+      _rxCustomerRegisterState.value = Status.success(data: response.data);
+      FocusManager.instance.primaryFocus?.unfocus();
+      //Get.back();
+      //Get.offAllNamed(Routes.OTP);
+      //popupBottomSheet(bottomSheetBody: const SubmitBottomSheet());
+    } else {
+      _rxCustomerRegisterState.value = Status.failure(reason: "reason");
+      SnackBars.failure("Oops!", response.message);
+    }
+  }
+
+  Future<void> verifyUsername (data) async {
+    _rxUsernameVerify.value = Status.loading();
+    Map<String, dynamic> data = {
+      "username": customerUsernameController.value.text,
+    };
+    final response = await _authRepository.usernameVerify(data);
+    if (!response.error) {
+      usernameExists.value = false;
+      _rxUsernameVerify.value = Status.success(data: response.data);
+      FocusManager.instance.primaryFocus?.unfocus();
+    } else {
+      _rxUsernameVerify.value = Status.failure(reason: "reason");
+      usernameExists.value = true;
+      SnackBars.failure("Oops!", response.message);
+    }
   }
 
   void startTimer() {
     canResend.value = false;
-    timeLeft.value = 60;
+    timeLeft.value = 10;
 
     Timer.periodic(Duration(seconds: 1), (timer) {
       if (timeLeft.value > 0) {
@@ -140,25 +267,20 @@ class AuthController extends GetxController {
       }
     });
   }
-  void resendOtp() {
-    // Handle OTP resend logic here
+  void resendOtp() async{
     startTimer();
+    isResend.value = true;
+    //await verifyOtp();
+    resendOtpForVerify();
   }
   //
   @override
   void onInit() {
     super.onInit();
     _getCurrentUser();
-    _rxCountry = RxString(details.dialCode!);
+    isFirstTime.value = storage.read('isFirstTime') ?? true;
     isBiometricEnabled.value = storage.read('biometricEnabled') ?? false;
-    onCountryChanged(Country(
-        name: 'Nepal',
-        dialCode: "977",
-        flag: "",
-        maxLength: 10,
-        minLength: 10,
-        code: 'NP'));
-    // _rxCountry.value =  "977";//Country(name: 'Nepal', dialCode: "977",flag: "",maxLength: 10, minLength: 10);
+
   }
 
   @override
@@ -172,7 +294,6 @@ class AuthController extends GetxController {
     loginEmailController.dispose();
     loginPasswordController.dispose();
     customerFullNameController.dispose();
-    customerPhoneNumController.dispose();
     customerEmailController.dispose();
     customerPasswordController.dispose();
     companyNameController.dispose();
@@ -181,6 +302,24 @@ class AuthController extends GetxController {
     companyCountryController.dispose();
     companyAddressController.dispose();
     companyPasswordController.dispose();
+  }
+
+  // Reset all data
+  void resetData() {
+    customerFullNameController.clear();
+    customerChfidController.text = '121212'; // Reset to default
+    customerUsernameController.clear();
+    customerHeadChfidController.text = '112112'; // Reset to default
+    customerPhoneNumberController.text = '9849298499'; // Reset to default
+    customerConfirmPasswordController.text = 'Apple@12345'; // Reset to default
+    customerEmailController.text = 'kadl.invoker@gmail.com'; // Reset to default
+    customerPasswordController.text = 'Apple@12345'; // Reset to default
+    customerOTPController.clear(); // Assuming OTP can be cleared
+    _rxcustomerOtpVerifyState.value = Status.idle();
+    _rxCustomerRegisterState.value = Status.idle();
+     isVerified.value = false;
+     canResend.value = false;
+
   }
 
   void _getCurrentUser() async {
@@ -219,6 +358,19 @@ class AuthController extends GetxController {
     return currentUser?.status == "FACULTY";
   }
 
+  bool isInsuree() {
+    return currentUser?.isInsuree==true;
+  }
+
+  InsureeInfo? insureeInfo() {
+    return currentUser?.insureeInfo;
+  }
+
+
+  bool isOfficer() {
+    return currentUser?.isOfficer==true;
+  }
+
   void logout() async {
     final result = await _authRepository.removeStorage(key: 'user');
     AuthController.to.currentUser!.token = null;
@@ -236,12 +388,16 @@ class AuthController extends GetxController {
     loginState.whenOrNull(
       success: (data) {
         _saveUserInStorage(
-            id: data!.username,
-            email: data.email,
-            name: "${data.firstName}  ${data.lastName}",
-            token: data.access,
-            role: data.userType,
-            refresh: data.refresh);
+          id: data?.username ?? "",
+          email: data!.email!,
+          name: "${data.firstName} ${data.lastName}",
+          token: data?.access ?? "",
+          role: data.exp.toString() ,
+          is_insuree: data?.isInsuree ?? false,
+          is_officer: data?.isOfficer ?? false,
+          refresh: data?.refresh ?? "",
+          insureeInfo: data?.insureeInfo, // Add insureeInfo here
+        );
         storage.write('loginUsername', loginEmailController.text);
         storage.write('loginPassword',
             loginPasswordController.text); // Consider encryption here
@@ -252,7 +408,6 @@ class AuthController extends GetxController {
       failure: showSnackBarOnFailure,
     );
   }
-
 
   void toggleBiometric(bool value) async {
     isBiometricEnabled.value = value;
@@ -337,12 +492,16 @@ class AuthController extends GetxController {
     loginState.whenOrNull(
       success: (data) {
         _saveUserInStorage(
-            id: data!.username,
-            email: data.email,
-            name: "${data.firstName}  ${data.lastName}",
-            token: data!.access,
-            role: data.userType,
-            refresh: data.refresh);
+          id: data?.username ?? "",
+          email: data!.email!,
+          name: "${data.firstName} ${data.lastName}",
+          token: data?.access ?? "",
+          role: data?.userType ?? '',
+          is_insuree: data?.isInsuree ?? false,
+          is_officer: data?.isOfficer ?? false,
+          refresh: data?.refresh ?? "",
+          insureeInfo: data?.insureeInfo, // Add insureeInfo here
+        );
         _getCurrentUser();
         Get.offAllNamed(Routes.ROOT);
       },
@@ -350,28 +509,36 @@ class AuthController extends GetxController {
     );
   }
 
-  void _saveUserInStorage(
-      {String? id,
-      String? email,
-      String? name,
-      String? phone,
-      String? token,
-      String? role,
-      String? status,
-      String? refresh}) async {
-    await _authRepository.writeStorage(
-      key: 'user',
-      entity: UserEntity(
-          id: id,
-          name: name,
-          email: email,
-          phoneNumber: phone,
-          token: token,
-          role: role,
-          status: status,
-          refresh: refresh),
+  void _saveUserInStorage({
+    required String id,
+    required String email,
+    required String name,
+    required String token,
+    String? phone,
+    String? status,
+    required String role,
+    required bool is_insuree,
+    required bool is_officer,
+    required String refresh,
+    InsureeInfo? insureeInfo, // Add insureeInfo as an optional parameter
+  }) {
+    final user = UserEntity(
+      id: id,
+      email: email,
+      name: name,
+      token: token,
+      role: role,
+      refresh: refresh,
+      isInsuree: is_insuree,
+      isOfficer: is_officer,
+      insureeInfo: insureeInfo,
+      phoneNumber: phone,
+      status: status, // Pass insureeInfo
     );
+
+    storage.write('user', user.toMap());
   }
+
 
   void _saveConfigInStorage(
       {String? domainName,
@@ -388,6 +555,19 @@ class AuthController extends GetxController {
     );
   }
 
+  bool validatePasswords() {
+    return customerPasswordController.text == customerConfirmPasswordController.text;
+  }
+  String? confirmPasswordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (!validatePasswords()) {
+      return 'Passwords do not match';
+    }
+    return null; // Return null if validation is successful
+  }
+
   void toggleObscurePassword() {
     _rxIsObscure.value = !isObscure;
   }
@@ -396,7 +576,7 @@ class AuthController extends GetxController {
     loginEmailController.clear();
     loginPasswordController.clear();
     customerFullNameController.clear();
-    customerPhoneNumController.clear();
+    customerPhoneNumberController.clear();
     customerEmailController.clear();
     customerPasswordController.clear();
     companyNameController.clear();

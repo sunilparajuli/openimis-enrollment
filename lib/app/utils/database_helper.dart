@@ -1,9 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-
 import 'dart:convert';
-
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -20,12 +17,12 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB() async {
-    String path = join(await getDatabasesPath(), 'enrollment.db');
+    String path = join(await getDatabasesPath(), 'family_enrollment.db');
     return await openDatabase(
       path,
-      version: 2, // Increment the version to trigger the onUpgrade
+      version: 4, // Update version to trigger migrations
       onCreate: (db, version) async {
-        await _createTable(db);
+        await _createTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -35,116 +32,204 @@ class DatabaseHelper {
     );
   }
 
-  Future<void> _createTable(Database db) async {
+  Future<void> _createTables(Database db) async {
+    // Create family table
     await db.execute('''
-      CREATE TABLE enrollments(
+      CREATE TABLE family (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        photo TEXT,
-        chfid TEXT,
+        chfid TEXT NOT NULL UNIQUE,
         json_content TEXT,
-        sync INTEGER
+        photo TEXT,
+        sync INTEGER DEFAULT 0
       )
+    ''');
+
+    // Create members table
+    await db.execute('''
+      CREATE TABLE members (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        chfid TEXT NOT NULL UNIQUE,  -- Each member has a unique CHFID
+        name TEXT NOT NULL,
+        head INTEGER DEFAULT 0,      -- 1 for head, 0 for other members
+        json_content TEXT,
+        photo TEXT,
+        sync INTEGER DEFAULT 0,
+        family_id INTEGER,           -- Foreign key to link to the family
+        FOREIGN KEY(family_id) REFERENCES family(id) ON DELETE CASCADE
+      );
     ''');
   }
 
   Future<void> _migrateToVersion2(Database db) async {
-    // Rename the old table
-    await db.execute('ALTER TABLE enrollments RENAME TO enrollments_old;');
-
-    // Create the new table with the updated schema
-    await _createTable(db);
-
-    // Copy data from old table to new table
-    await db.execute('''
-      INSERT INTO enrollments (id, chfid, json_content, sync)
-      SELECT id, chfid, json_content, sync FROM enrollments_old;
-    ''');
-
-    // Drop the old table
-    await db.execute('DROP TABLE enrollments_old;');
+    // Example migration steps if needed for version upgrade
   }
 
-  Future<void> insertEnrollment(Map<String, dynamic> enrollmentData) async {
+  // Insert family and head member
+  Future<void> insertFamilyAndHeadMember(
+      String chfid, Map<String, dynamic> familyDetails, String headName, String photoPath) async {
     final db = await database;
 
-    // Create the family object
-    Map<String, dynamic> familyData = {
-      'familyType': enrollmentData['familyType'] ?? '',
-      'confirmationType': enrollmentData['confirmationType'] ?? ''
-    };
+    // Family data
+    String familyJsonContent = jsonEncode(familyDetails);
 
-    // Create the members array
-    List<Map<String, dynamic>> membersData = [
-      {
-        'phone': enrollmentData['phone'] ?? '',
-        'birthdate': enrollmentData['birthdate'] ?? '',
-        'chfid': enrollmentData['chfid'] ?? '',
-        'eaCode': enrollmentData['eaCode'] ?? '',
-        'email': enrollmentData['email'] ?? '',
-        'gender': enrollmentData['gender'] ?? '',
-        'givenName': enrollmentData['givenName'] ?? '',
-        'identificationNo': enrollmentData['identificationNo'] ?? '',
-        'isHead': enrollmentData['isHead'] ?? 0,
-        'lastName': enrollmentData['lastName'] ?? '',
-        'maritalStatus': enrollmentData['maritalStatus'] ?? '',
-        'headChfid': enrollmentData['headChfid'] ?? '',
-        'newEnrollment': enrollmentData['newEnrollment'] ?? 0,
-        'photo': enrollmentData['photo'] ?? '',
-        'remarks': enrollmentData['remarks'] ?? '',
-        'healthFacilityLevel': enrollmentData['healthFacilityLevel'] ?? '',
-        'healthFacility': enrollmentData['healthFacility'] ?? '',
-        'relationShip': enrollmentData['relationShip'] ?? ''
-      }
-    ];
+    await db.transaction((txn) async {
+      // Insert into family table
+      await txn.insert('family', {
+        'chfid': chfid,
+        'json_content': familyJsonContent,
+        'photo': photoPath,
+        'sync': 0
+      });
 
-    // Combine family and members into a single data structure
-    Map<String, dynamic> structuredData = {
-      'family': familyData,
-      'members': membersData
-    };
-
-    // Convert structured data to JSON string
-    String jsonContent = jsonEncode(structuredData);
-
-    // Prepare data for insertion into the database
-    Map<String, dynamic> row = {
-      'chfid': enrollmentData['chfid'],
-      'photo': enrollmentData['photo'],
-      'json_content': jsonContent,
-      'sync': 0 // Assuming false for initial save
-    };
-
-    await db.insert('enrollments', row);
+      // Insert head member into members table
+      await txn.insert('members', {
+        'chfid': chfid,
+        'name': headName,
+        'head': 1,
+        'json_content': familyJsonContent,
+        'photo': photoPath,
+        'sync': 0
+      });
+    });
   }
 
-  Future<List<Map<String, dynamic>>> retrieveAllEnrollments() async {
+  // Insert additional family members
+  Future<void> insertFamilyMember(
+      String chfid, String memberName, Map<String, dynamic> memberDetails, String photoPath) async {
     final db = await database;
-    // Fetch all records from the enrollments table
-    List<Map<String, dynamic>> result = await db.query('enrollments');
-    print(result);
+
+    String memberJsonContent = jsonEncode(memberDetails);
+
+    await db.insert('members', {
+      'chfid': chfid,
+      'name': memberName,
+      'head': 0,
+      'json_content': memberJsonContent,
+      'photo': photoPath,
+      'sync': 0
+    });
+  }
+
+  // Retrieve all family records
+  Future<List<Map<String, dynamic>>> retrieveAllFamilies() async {
+    final db = await database;
+    return await db.query('family');
+  }
+
+  // Retrieve members for a specific family by chfid
+  Future<List<Map<String, dynamic>>> retrieveFamilyMembers(String chfid) async {
+    final db = await database;
+    return await db.query('members', where: 'chfid = ?', whereArgs: [chfid]);
+  }
+
+
+  Future<List<Map<String, dynamic>>> getAllFamiliesWithMembers() async {
+    final db = await database;
+
+    // Query all families
+    final List<Map<String, dynamic>> families = await db.query('family');
+
+    List<Map<String, dynamic>> allData = [];
+
+    for (var family in families) {
+      // Get the family members associated with this family
+      final List<Map<String, dynamic>> members = await db.query(
+        'members',
+        where: 'chfid = ?',
+        whereArgs: [family['chfid']],
+      );
+
+      // Add family and its members to the result
+      allData.add({
+        'family': family,
+        'members': members,
+      });
+    }
+
+    return allData;
+  }
+
+
+  Future<Map<String, dynamic>?> getFamilyAndMembers(int familyId) async {
+    final db = await database; // Access the database instance
+
+    // Retrieve family data by family id
+    final List<Map<String, dynamic>> familyResult = await db.query(
+      'family', // Query the 'family' table
+      where: 'id = ?', // Query by 'id'
+      whereArgs: [familyId],
+    );
+
+    if (familyResult.isEmpty) {
+      // If no family found, return null
+      return null;
+    }
+
+    // Retrieve chfid from familyResult
+    //final String chfid = familyResult.first['chfid'];
+
+    // Retrieve members related to the family using the chfid
+    final List<Map<String, dynamic>> membersResult = await db.query(
+      'members', // Query the 'members' table
+      where: 'family_id = ?', // Use chfid to get related members
+      whereArgs: [familyId],
+    );
+
+    // Prepare the result with family and members
+    Map<String, dynamic> result = {
+      'family': familyResult.first, // There should only be one family per id
+      'members': membersResult, // List of members related to the family
+    };
 
     return result;
   }
 
-  Future<int> deleteEnrollment(int id) async {
-    final db = await database;
-    return await db.delete('enrollments', where: 'id = ?', whereArgs: [id]);
-  }
 
-  Future<Map<String, dynamic>?> getEnrollmentById(int id) async {
+
+  // Retrieve a specific enrollment (family) by ID
+  Future<Map<String, dynamic>?> getFamilyById(int id) async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'enrollments',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    final List<Map<String, dynamic>> maps = await db.query('family', where: 'id = ?', whereArgs: [id]);
 
     if (maps.isNotEmpty) {
       return maps.first;
     } else {
-      return null; // Return null if no record is found
+      return null;
     }
   }
+
+  // Retrieve a specific family member by ID
+  Future<Map<String, dynamic>?> getMemberById(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('members', where: 'id = ?', whereArgs: [id]);
+
+    if (maps.isNotEmpty) {
+      return maps.first;
+    } else {
+      return null;
+    }
+  }
+
+  // Delete a family and its members by chfid
+  Future<int> deleteFamily(int familyid) async {
+    final db = await database;
+    // SQLite foreign key constraint will handle members deletion
+    return await db.delete('family', where: 'id = ?', whereArgs: [familyid]);
+
+  }
+
+  // Delete a member by ID
+  Future<int> deleteMember(int id) async {
+    final db = await database;
+    return await db.delete('members', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // Update sync status for a family and its members
+  Future<void> updateSyncStatus(String chfid) async {
+    final db = await database;
+    await db.transaction((txn) async {
+      await txn.update('family', {'sync': 1}, where: 'chfid = ?', whereArgs: [chfid]);
+      await txn.update('members', {'sync': 1}, where: 'chfid = ?', whereArgs: [chfid]);
+    });
+  }
 }
-
-

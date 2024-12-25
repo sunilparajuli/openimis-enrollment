@@ -10,6 +10,7 @@ import '../../../../language/language_service.dart';
 import '../../../../language/view/language_dropdown.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../../widgets/custom_avatar.dart';
+import '../../../Insuree/views/notification.dart';
 import '../../../auth/controllers/auth_controller.dart';
 import '../../../home/controllers/home_controller.dart';
 import '../../controllers/root_controller.dart';
@@ -32,7 +33,8 @@ class MenuView extends GetView<RootController> {
           MenuItem(
             icon: HeroIcons.user,
             title: "Profile",
-            onTap: () => Get.toNamed(Routes.CUSTOMER_PROFILE),
+            onTap: () => Get.toNamed(Routes.PROFILE),
+            //onTap: () => Get.toNamed(Routes.CUSTOMER_PROFILE),
           ),
           MenuItem(icon: HeroIcons.bell,
               title: "Notifications",
@@ -78,26 +80,16 @@ class MenuView extends GetView<RootController> {
               );
             },
           ),
-          MenuItem(
+      MenuItem(
             icon: HeroIcons.heart,
             title: "Supported Partners",
             onTap: () => Get.to(() =>  PartnersPage()),
           ),
-          // Expanded(
-          //   child: Obx(() {
-          //     final partners = controller.supportedPartners;
-          //     return ListView.builder(
-          //       itemCount: partners.length,
-          //       itemBuilder: (context, index) {
-          //         final partner = partners[index];
-          //         return ListTile(
-          //           leading: Image.network(partner['logo'] ?? ''),
-          //           title: Text(partner['name'] ?? ''),
-          //         );
-          //       },
-          //     );
-          //   }),
-          // ),
+          MenuItem(
+            icon: HeroIcons.heart,
+            title: "Notifications",
+            onTap: () => Get.to(() =>  NotificationSettingsPage()),
+          ),
           const Spacer(),
 
           MenuItem(

@@ -1,9 +1,14 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:openimis_app/app/data/remote/repositories/root/root_repository.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+
 import '../../../data/remote/base/status.dart';
 import '../../../di/locator.dart';
 import '../../../language/language_service.dart';
@@ -12,6 +17,8 @@ import '../../auth/controllers/auth_controller.dart';
 import '../../home/controllers/home_controller.dart';
 import '../../search/controllers/search_controller.dart';
 
+enum MConnectivityResult { none, wifi, mobile }
+
 class RootController extends GetxController {
   static RootController get to => Get.find();
   final persistentTabController = PersistentTabController(initialIndex: 0);
@@ -19,20 +26,65 @@ class RootController extends GetxController {
 
   final _rootRepository = getIt.get<RootRepository>();
 
-  final Rx<Status> _configStatus = Rx(const Status.idle());
+  final Rx<Status> configurationStatus = Rx(const Status.idle());
 
-  Status get configStatus => _configStatus.value;
+  Status get configStatus => configurationStatus.value;
 
   var notices = <Map<String, String>>[].obs;
 
   RxList<Map<String, String>> supportedPartners = <Map<String, String>>[].obs;
 
-  @override
+
+  final _connectionType = MConnectivityResult.none.obs;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription _streamSubscription;
+  MConnectivityResult get connectionType => _connectionType.value;
+
+  set connectionType(value) {
+    _connectionType.value = value;
+  }
+
+
+@override
   void onInit() {
     super.onInit();
     fetchConfigurations();
     fetchSupportedPartners();
     fetchDummyNotices();
+
+    getConnectivityType();
+    _streamSubscription =
+        _connectivity.onConnectivityChanged.listen(_updateState);
+  }
+
+
+  Future<void> getConnectivityType() async {
+    ConnectivityResult connectivityResult;
+    try {
+      connectivityResult = await _connectivity.checkConnectivity();
+      print('Connectivity result: $connectivityResult');
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    }
+  }
+
+  void _updateState(ConnectivityResult result) {
+    switch (result) {
+      case ConnectivityResult.wifi:
+        connectionType = MConnectivityResult.wifi;
+        break;
+      case ConnectivityResult.mobile:
+        connectionType = MConnectivityResult.mobile;
+        break;
+      case ConnectivityResult.none:
+        connectionType = MConnectivityResult.none;
+        break;
+      default:
+        print('Failed to get connection type');
+        break;
+    }
   }
 
   @override
@@ -44,6 +96,7 @@ class RootController extends GetxController {
   void onClose() {
     super.onClose();
     persistentTabController.dispose();
+    _streamSubscription.cancel();
   }
 
   void onHomeDoubleClick() {
@@ -88,12 +141,12 @@ class RootController extends GetxController {
   }
 
   Future<void> fetchConfigurations() async { // Change return type to Future<void>
-    _configStatus.value = Status.loading();
+    configurationStatus.value = Status.loading();
     try {
       final configStatus = await _rootRepository.fetchConfig();
       configStatus.whenOrNull(
         success: (data) {
-          _configStatus.value = Status.success(data: data);
+          configurationStatus.value = Status.success(data: data);
 
           // Assuming the languages are part of the data
           supportedPartners.value = List<Map<String, String>>.from(data['supported_partners'] ?? []);
@@ -107,11 +160,11 @@ class RootController extends GetxController {
           }
         },
         failure: (error) {
-          _configStatus.value = Status.success();
+          configurationStatus.value = Status.success();
         },
       );
     } catch (e) {
-      _configStatus.value = Status.success();
+      configurationStatus.value = Status.success();
     }
   }
 

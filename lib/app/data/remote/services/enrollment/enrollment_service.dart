@@ -48,5 +48,14 @@ class EnrollmentService implements IEnrollmentService<IDto> {
     }
   }
 
+  @override
+  Future<Response> enrollmentR(data) async {
+    try {
+      return await dioClient.post(ApiRoutes.ENROLLMENT, data: data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 
 }

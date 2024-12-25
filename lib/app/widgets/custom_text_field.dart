@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final int? minLines;
   final int? maxLength;
+  final bool isUsernameField;
   final void Function(String?)? onSaved;
   final String? Function(String?)? validator;
   final void Function(String)? onFieldSubmitted;
@@ -24,10 +25,12 @@ class CustomTextField extends StatelessWidget {
   final bool isSearchBar;
   final bool obscureText;
   final HeroIcons? suffixIcon;
+  final Color? suffixIconColor;
   final double suffixIconSize;
   final HeroIcons? prefixIcon;
   final void Function()? onSuffixTap;
   final double prefixIconSize;
+  final bool isEmailField;
   final void Function(Country)? onCountryChanged;
 
   const CustomTextField({
@@ -37,6 +40,7 @@ class CustomTextField extends StatelessWidget {
     this.minLines,
     this.maxLength,
     this.controller,
+    this.isUsernameField = false,
     this.onSaved,
     this.validator,
     this.autofocus = false,
@@ -48,9 +52,11 @@ class CustomTextField extends StatelessWidget {
     this.isPhoneNumber = false,
     this.isSearchBar = false,
     this.obscureText = false,
+    this.isEmailField = false,
     this.suffixIcon,
     this.prefixIcon,
     this.suffixIconSize = 24,
+    this.suffixIconColor,
     this.prefixIconSize = 24,
     this.onChanged,
     this.onSuffixTap,
@@ -87,64 +93,88 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
         if (!isSearchBar) SizedBox(height: 8.h),
-        !isPhoneNumber
-            ? TextFormField(
-                controller: controller,
-                onChanged: onChanged,
-                style: GoogleFonts.poppins(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xff657786),
+
+        // Conditional widget for Phone, Search, and Email fields
+        if (isPhoneNumber)
+          IntlPhoneField(
+            controller: controller,
+            autofocus: autofocus,
+            initialCountryCode: "NP",
+            style: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+            ),
+            showDropdownIcon: true,
+            flagsButtonPadding: EdgeInsets.only(left: 10.w),
+            dropdownTextStyle: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+            ),
+            onCountryChanged: onCountryChanged,
+          )
+        else
+          TextFormField(
+            controller: controller,
+            onChanged: onChanged,
+            style: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xff657786),
+            ),
+            maxLength: maxLength,
+            maxLines: maxLines,
+            minLines: minLines,
+            keyboardType: isEmailField
+                ? TextInputType.emailAddress
+                : isSearchBar
+                ? TextInputType.text
+                : textInputType,
+            obscureText: obscureText,
+            enableSuggestions: !isPassword,
+            autocorrect: !isPassword,
+            decoration: InputDecoration(
+              hintText: hintText,
+              contentPadding: isSearchBar
+                  ? EdgeInsets.symmetric(vertical: 10.w)
+                  : null,
+              suffixIcon: suffixIcon != null
+                  ? IconButton(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: onSuffixTap ?? () {},
+                icon: HeroIcon(
+                  suffixIcon!,
+                  size: suffixIconSize,
+                  color: suffixIconColor,
                 ),
-                maxLength: maxLength,
-                maxLines: maxLines,
-                minLines: minLines,
-                keyboardType: textInputType,
-                obscureText: obscureText,
-                enableSuggestions: !isPassword,
-                autocorrect: !isPassword,
-                decoration: InputDecoration(
-                  hintText: hintText,
-                  contentPadding:
-                      isSearchBar ? EdgeInsets.symmetric(vertical: 10.w) : null,
-                  suffixIcon: suffixIcon != null
-                      ? IconButton(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onPressed: onSuffixTap ?? () {},
-                          icon: HeroIcon(suffixIcon!, size: suffixIconSize),
-                        )
-                      : null,
-                  prefixIcon: prefixIcon != null
-                      ? IconButton(
-                          onPressed: () {},
-                          icon: HeroIcon(prefixIcon!, size: prefixIconSize),
-                        )
-                      : null,
-                ),
-                validator: validator,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                autofocus: autofocus,
-                onSaved: onSaved,
-                onFieldSubmitted: onFieldSubmitted,
               )
-            : IntlPhoneField(
-                controller: controller,
-                autofocus: autofocus,
-                // initialCountryCode: Get.deviceLocale!.countryCode.toString(),
-                initialCountryCode: "NP",
-                style: GoogleFonts.poppins(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w400,
+                  : null,
+              prefixIcon: prefixIcon != null
+                  ? IconButton(
+                onPressed: () {},
+                icon: HeroIcon(
+                  prefixIcon!,
+                  size: prefixIconSize,
+                  color: suffixIconColor,
                 ),
-                showDropdownIcon: true,
-                flagsButtonPadding: EdgeInsets.only(left: 10.w),
-                dropdownTextStyle: GoogleFonts.poppins(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w400,
-                ),
-                onCountryChanged: onCountryChanged,
-              ),
+              )
+                  : null,
+            ),
+            validator: isEmailField
+                ? (value) {
+              // Basic email validation logic
+              final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+              if (value == null || !emailRegex.hasMatch(value)) {
+                return 'Please enter a valid email address';
+              }
+              return null;
+            }
+                : validator,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            autofocus: autofocus,
+            onSaved: onSaved,
+            onFieldSubmitted: onFieldSubmitted,
+          ),
       ],
     );
   }

@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:heroicons/heroicons.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:openimis_app/app/modules/search/views/widgets/pdfview.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openimis_app/app/core/values/strings.dart';
@@ -25,14 +25,52 @@ class SearchResults extends GetView<CSearchController> {
   Widget build(BuildContext context) {
     final EnrollmentController _encontroller = Get.find<EnrollmentController>();
 
+    void onSuccess(PaymentSuccessModel success) {
+      showDialog(
+        context: Get.context!,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Payment Successful'),
+            actions: [
+              SimpleDialogOption(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.pop(Get.context!);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    void onFailure(PaymentFailureModel failure) {
+      debugPrint(failure.toString());
+    }
+
+    void onCancel() {
+      debugPrint('Cancelled');
+    }
+
+    payWithKhaltiInApp() {
+      KhaltiScope.of(Get.context!).pay(
+        config: PaymentConfig(
+          amount: 1000, // in paisa
+          productIdentity: 'Product Id',
+          productName: 'Product Name',
+          mobileReadOnly: false,
+        ),
+        preferences: [PaymentPreference.khalti],
+        onSuccess: onSuccess,
+        onFailure: onFailure,
+        onCancel: onCancel,
+      );
+    }
+
     return Obx(
           () => controller.rxResults.when(
-        idle: () => Container(
-          child: Column(
-            children: [
-              InstructionCard(),
-            ],
-          ),
+        idle: () => Column(
+          children: [InstructionCard()],
         ),
         loading: () => Center(child: InsureeShimmer()),
         success: (results) => results!.isEmpty
@@ -52,41 +90,45 @@ class SearchResults extends GetView<CSearchController> {
             child: Column(
               children: [
                 MembershipCard(
-                  logoUrl:
-                  'https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_of_openIMIS.png',
-                  dateOfBirth:
-                  results[index].data!.insuree!.dateOfBirth ?? 'N/A',
-                  firstServicePoint:
-                  results[index].data!.insuree!.firstServicePoint ??
-                      'Unknown',
-                  fullName:
-                  results[index].data!.insuree!.fullname ?? 'Unknown',
-                  gender: results[index].data!.insuree!.insureeGender ??
-                      'Not specified',
-                  photoUrl:
-                      'https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_of_openIMIS.png',
-                  policyStatus:
-                  results[index].data!.insuree!.policyStatus ??
-                      'Unknown',
-                  qrCodeData: results[index].data!.insuree!.chfId ??
-                      'N/A', // Assuming `chfId` is used as QR code data
+                  logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_of_openIMIS.png',
+                  dateOfBirth: results[index].data!.insuree!.dateOfBirth ?? 'N/A',
+                  firstServicePoint: results[index].data!.insuree!.firstServicePoint ?? 'Unknown',
+                  fullName: results[index].data!.insuree!.fullname ?? 'Unknown',
+                  gender: results[index].data!.insuree!.insureeGender ?? 'Not specified',
+                  photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_of_openIMIS.png',
+                  policyStatus: results[index].data!.insuree!.policyStatus ?? 'Unknown',
+                  qrCodeData: results[index].data!.insuree!.chfId ?? 'N/A',
                 ),
                 SizedBox(height: 10.0),
-                IconButton(
-                  icon: HeroIcon(HeroIcons.document),
+                results[index].data?.insuree?.policyStatus?.toLowerCase()=='expired'
+                    ?
+                ElevatedButton(
                   onPressed: () {
-                    _encontroller.getMembershipCard(
-                      "feb656f8-b9ea-4c88-bdb8-00d2a1aa2fa2",
+                    final config = PaymentConfig(
+                      amount: 3500000, // Amount should be in paisa
+                      productIdentity: 'dell-g5-g5510-2021',
+                      productName: 'Dell G5 G5510 2021',
+                      productUrl: 'https://www.khalti.com/#/bazaar',
+                      additionalData: {'vendor': 'Khalti Bazaar'},
+                    );
+                    KhaltiScope.of(Get.context!).pay(
+                      config: config,
+                      preferences: [
+                        PaymentPreference.khalti,
+                        PaymentPreference.connectIPS,
+                        PaymentPreference.eBanking,
+                        PaymentPreference.sct,
+                      ],
+                      onSuccess: onSuccess,
+                      onFailure: onFailure,
+                      onCancel: onCancel,
                     );
                   },
-                ),
-                FamilyMemberDetails(
-                  families: results[index].data!.families!,
-                ),
+                  child: Text("Khalti"),
+                ) : SizedBox(),
+                FamilyMemberDetails(families: results[index].data!.families!),
                 SizedBox(height: 10.0),
-                PolicyDetails(
-                  policies: results[index].data!.policy!,
-                ),
+                PolicyDetails(policies: results[index].data!.policy!),
                 SizedBox(height: 10.0),
                 Obx(() {
                   return _encontroller.membershipState.whenOrNull(
@@ -98,7 +140,7 @@ class SearchResults extends GetView<CSearchController> {
                         return ElevatedButton(
                           onPressed: () {
                             showDialog(
-                              context: context,
+                              context: Get.context!,
                               builder: (context) => PdfViewerPopup(
                                 pdfBase64: data.pdfBase64,
                               ),

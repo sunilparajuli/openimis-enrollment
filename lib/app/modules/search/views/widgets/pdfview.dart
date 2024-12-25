@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PdfViewerPopup extends StatelessWidget {
   final String pdfBase64;
@@ -18,10 +18,11 @@ class PdfViewerPopup extends StatelessWidget {
       child: Container(
         height: double.infinity,
         width: double.infinity,
-        child: SfPdfViewer.memory(
-          pdfData,
-          controller: PdfViewerController(),
-        ),
+        child: Text('')
+        // SfPdfViewer.memory(
+        //   pdfData,
+        //   controller: PdfViewerController(),
+        // ),
       ),
     );
   }

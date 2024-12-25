@@ -10,19 +10,21 @@ class CustomInfoCard extends StatelessWidget {
     required this.child,
     required this.icon,
     required this.title,
+    this.padding,
     this.action,
     this.onActionTap,
   }) : super(key: key);
   final Widget child;
   final HeroIcons icon;
   final HeroIcons? action;
+  final double ? padding;
   final String title;
   final void Function()? onActionTap;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(padding!.w),
       margin: EdgeInsets.only(bottom: 16.h, right: 16.w, left: 16.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14.r),

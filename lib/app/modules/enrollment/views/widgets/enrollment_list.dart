@@ -44,96 +44,120 @@ class EnrollmentListPage extends StatelessWidget {
             return enrollments.isEmpty
                 ? Center(child: Text('No enrollments found'))
                 : ListView.builder(
-              itemCount: enrollments.length,
-              itemBuilder: (context, index) {
-                final enrollment = enrollments[index];
-                final photoBase64 = enrollment['photo'] as String?;
-                final imageProvider =
-                (photoBase64 != null && photoBase64.isNotEmpty)
-                    ? Image.memory(base64Decode(photoBase64)).image
-                    : AssetImage('assets/openimis-logo.png'); // Replace with actual avatar path or URL
+                    itemCount: enrollments.length,
+                    itemBuilder: (context, index) {
+                      final enrollment = enrollments[index];
+                      final photoBase64 = enrollment['photo'] as String?;
+                      final imageProvider = (photoBase64 != null &&
+                              photoBase64.isNotEmpty)
+                          ? Image.memory(base64Decode(photoBase64)).image
+                          : AssetImage(
+                              'assets/openimis-logo.png'); // Replace with actual avatar path or URL
 
-                return Dismissible(
-                  key: Key(enrollment['id'].toString()),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Icon(Icons.delete, color: Colors.white),
-                  ),
-                  confirmDismiss: (direction) async {
-                    return await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Confirm Deletion'),
-                          content: Text('Do you want to delete this enrollment?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false), // User cancels
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true), // User confirms
-                              child: Text('Delete'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  onDismissed: (direction) {
-                    controller.deleteEnrollment(enrollment['id']);
-                  },
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: imageProvider,
-                    ),
-                    title: Text(
-                        '${enrollment['chfid']} ${enrollment['sync']}'),
-                    subtitle: Text(
-                        'CHFID: ${enrollment['chfid']}\nPhone: ${enrollment['phone']}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Obx(() {
-                          return Checkbox(
-                            value: controller.selectedEnrollments
-                                .contains(enrollment['id']),
-                            onChanged: (value) {
-                              controller.toggleEnrollmentSelection(
-                                  enrollment['id'], value!);
+                      return Dismissible(
+                        key: Key(enrollment['id'].toString()),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Icon(Icons.delete, color: Colors.white),
+                        ),
+                        confirmDismiss: (direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('Confirm Deletion'),
+                                content: Text(
+                                    'Do you want to delete this enrollment?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context)
+                                        .pop(false), // User cancels
+                                    child: Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context)
+                                        .pop(true), // User confirms
+                                    child: Text('Delete'),
+                                  ),
+                                ],
+                              );
                             },
                           );
-                        }),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            controller.editEnrollment(enrollment);
-                            showDialog(
-                              context: context,
-                              builder: (_) => EditEnrollmentDialog(
-                                  controller: controller,
-                                  enrollment: enrollment),
-                            );
-                          },
+                        },
+                        onDismissed: (direction) {
+                          final enrollmentId = enrollment['family']['id'];
+
+                          // Call the delete method to handle backend removal or state change
+                          controller.deleteEnrollment(enrollmentId);
+
+                          // Update the local list to reflect the removal in the UI
+                          controller.filteredEnrollments.removeAt(index);
+
+                          // Optionally, show a Snackbar to confirm deletion
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Enrollment deleted')),
+                          );
+                        },
+                        child: Card(
+                          elevation: 4,
+                          margin: EdgeInsets.all(10.0),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: imageProvider,
+                            ),
+                            title: Text(
+                                'chfid - ${enrollment['family']['chfid']} - Status: ${enrollment['family']['sync'] == 0 ? 'synced' : 'not synced'}'),
+                            subtitle: Text(
+                                'CHFID: ${enrollment['family']['chfid']}\nTotal Members: ${enrollment['members'].length ?? 0}'),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Obx(() {
+                                //   return Checkbox(
+                                //     value: controller.selectedEnrollments
+                                //         .contains(enrollment['id']),
+                                //     onChanged: (value) {
+                                //       controller.toggleEnrollmentSelection(
+                                //           enrollment['id'], value!);
+                                //     },
+                                //   );
+                                // }),
+                                // IconButton(
+                                //   icon: Icon(Icons.edit),
+                                //   onPressed: () {
+                                //     controller.editEnrollment(enrollment);
+                                //     showDialog(
+                                //       context: context,
+                                //       builder: (_) => EditEnrollmentDialog(
+                                //           controller: controller,
+                                //           enrollment: enrollment),
+                                //     );
+                                //   },
+                                // ),
+                                IconButton(
+                                  icon: Icon(Icons.add_box_outlined),
+                                  onPressed: () {
+                                    var k = enrollment['family']['id'];
+                                    controller.familyId.value =
+                                        enrollment['family']['id'];
+                                    controller.confirmAddMember(
+                                        enrollment['family']['id'],
+                                        enrollment['family']['chfid']);
+                                  },
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              // Handle the tap event
+                            },
+                          ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.add_box_outlined),
-                          onPressed: () {
-                            controller.confirmAddMember(enrollment['id']);
-                          },
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      // Handle the tap event
+                      );
                     },
-                  ),
-                );
-              },
-            );
+                  );
           }),
         ),
       ],
@@ -143,7 +167,7 @@ class EnrollmentListPage extends StatelessWidget {
 
 class EditEnrollmentDialog extends StatelessWidget {
   final EnrollmentController controller;
-  final  enrollment;
+  final enrollment;
 
   EditEnrollmentDialog({required this.controller, this.enrollment});
 
@@ -152,7 +176,8 @@ class EditEnrollmentDialog extends StatelessWidget {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(2), // Rounded corners for the dialog
+        borderRadius:
+            BorderRadius.circular(2), // Rounded corners for the dialog
       ),
       content: Container(
         width: 700.w, // Set a fixed width for the dialog
@@ -166,8 +191,8 @@ class EditEnrollmentDialog extends StatelessWidget {
                 Text(
                   'Edit Enrollment',
                   style: Theme.of(context).textTheme.headline6?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 SizedBox(height: 20.h), // Gap between title and input fields
 
@@ -291,7 +316,9 @@ class EditEnrollmentDialog extends StatelessWidget {
     required ValueChanged<String?> onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: items.contains(value) ? value : null, // Ensure the value exists in items
+      value: items.contains(value)
+          ? value
+          : null, // Ensure the value exists in items
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(),
@@ -323,8 +350,4 @@ class EditEnrollmentDialog extends StatelessWidget {
       ],
     );
   }
-
-
-
-
 }

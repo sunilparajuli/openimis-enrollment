@@ -5,13 +5,14 @@ import '../../../data/remote/base/status.dart';
 import '../../../data/remote/dto/search/search_out_dto.dart';
 import '../../../data/remote/repositories/search/search_repository.dart';
 import '../../../di/locator.dart';
+import '../../auth/controllers/auth_controller.dart';
 import '../../policy/views/widgets/qr_view.dart';
 
 class CSearchController extends GetxController {
   static SearchController get to => Get.find();
   final _searchRepository = getIt.get<SearchRepository>();
   final searchController = TextEditingController();
-
+  final AuthController authController = AuthController.to;
   final Rx<Status<List<InsureeDetailsDto>>> _rxResults =
       Rx<Status<List<InsureeDetailsDto>>>(const Status.idle());
 
@@ -25,6 +26,7 @@ class CSearchController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    getSearchResult();
   }
 
   @override
@@ -35,12 +37,16 @@ class CSearchController extends GetxController {
 
   getSearchResult() async {
     _rxResults.value = Status.loading();
-    if (!searchController.text.isBlank!) {
-      final Status<List<InsureeDetailsDto>> results =
-          await _searchRepository.getAll(q: searchController.text.trim());
-      _rxResults.value = results;
-    }
+
+    // Check if there is any search text; otherwise, pass an empty query.
+    authController.isInsuree() ? searchController.text = authController!.insureeInfo()!.chfid! : "";
+    final searchQuery = searchController.text;
+
+    final Status<List<InsureeDetailsDto>> results =
+    await _searchRepository.getAll(q: searchQuery);
+    _rxResults.value = results;
   }
+
 
   Future<void> scanQRCode(TextEditingController controller) async {
     final result = await Get.to(QRViewExample(controller: controller));

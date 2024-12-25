@@ -27,6 +27,44 @@ class AuthService implements IAuthService<IDto> {
     throw UnimplementedError();
   }
 
+  @override
+  Future<Response> insureeValidation(data) async {
+    try {
+      return await dioClient.post(ApiRoutes.INSUREE_VALIDATION, data: data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> insureeOtpValidation(data) async {
+    try {
+      return await dioClient.post(ApiRoutes.INSUREE_OTP_VALIDATION, data: data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> insureeOtpResend(data) async {
+    try {
+      return await dioClient.post(ApiRoutes.INSUREE_OTP_RESEND, data: data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> userNameVerify(data) async {
+    try {
+      return await dioClient.post(ApiRoutes.USERNAME_VERIFY, data: data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
 
 
 

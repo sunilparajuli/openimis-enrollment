@@ -36,12 +36,13 @@ class ChooseBottomSheetBody extends GetView<AuthController> {
                     controller.onSelectRegisterType(RegisterType.COMPANY),
               ),
               SizedBox(width: 15.w),
-              // CustomChooseButton(
-              //   title: "Job",
-              //   icon: HeroIcons.briefcase,
-              //   onTap: () =>
-              //       controller.onSelectRegisterType(RegisterType.CUSTOMER),
-              // ),
+              CustomChooseButton(
+                title: "Register Family",
+                icon: HeroIcons.briefcase,
+                onTap: () =>
+                    Get.toNamed('/public-enrollment')
+                //controller.onSelectRegisterType(RegisterType.CUSTOMER),
+              ),
             ],
           ),
         )

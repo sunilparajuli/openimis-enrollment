@@ -12,9 +12,9 @@ import 'health_service_provider.dart';
 
 class EnrollmentForm extends StatelessWidget {
   final int? enrollmentId;
+  final String? chfid;
   final EnrollmentController controller = Get.put(EnrollmentController());
-
-  EnrollmentForm({this.enrollmentId});
+  EnrollmentForm({this.enrollmentId, this.chfid});
 
   @override
   Widget build(BuildContext context) {
@@ -26,26 +26,30 @@ class EnrollmentForm extends StatelessWidget {
           child: Column(
             children: [
               // New Enrollment Switch
-              Obx(() {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    if (enrollmentId != null)
-                      Text('Editing enrollment with ID: $enrollmentId'),
-                    if (enrollmentId == null)
-                      Text('new_enrollment'.tr),
-                    Switch(
-                      value: controller.newEnrollment.value,
-                      onChanged: (value) {
-                        controller.newEnrollment.value = value;
-                        if (value) {
-                          controller.isHead.value = true;
-                        }
-                      },
-                      activeColor: Colors.green,
-                      inactiveThumbColor: Colors.grey,
-                      inactiveTrackColor: Colors.grey.shade400,
-                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (enrollmentId != null)
+                    Text('Adding members with ID: $chfid'),
+                  if (enrollmentId == null) Text('new_enrollment'.tr),
+
+                  if (enrollmentId == null)
+                    Obx(() {
+                      return Switch(
+                        value: controller.newEnrollment.value,
+                        onChanged: (value) {
+                          controller.newEnrollment.value = value;
+                          if (value) {
+                            controller.isHead.value = true;
+                          }
+                        },
+                        activeColor: Colors.green,
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.grey.shade400,
+                      );
+                    }),
+
+                  if (enrollmentId == null)
                     Obx(() {
                       return Row(
                         children: [
@@ -62,15 +66,10 @@ class EnrollmentForm extends StatelessWidget {
                         ],
                       );
                     }),
-                  ],
-                );
-              }),
+                ],
+              ),
 
               SizedBox(height: 16),
-
-              // Head CHFID Field
-
-              // Photo Section
               Obx(() {
                 return controller.photo.value == null
                     ? Stack()
@@ -78,8 +77,8 @@ class EnrollmentForm extends StatelessWidget {
                         children: [
                           Image.file(
                             File(controller.photo.value!.path),
-                            width: 100,
-                            height: 100,
+                            width: enrollmentId == null ? 100 : 50,
+                            height: enrollmentId == null ? 100 : 50,
                           ),
                           IconButton(
                             icon: Icon(Icons.edit, size: 30),
@@ -90,29 +89,52 @@ class EnrollmentForm extends StatelessWidget {
               }),
               SizedBox(height: 16),
               // Head CHFID Field with QR Code Scanner
+
               Row(
                 children: [
-                  Expanded(
-                    child: buildTextFormField(controller.headChfidController, 'head_chfid'.tr,
-                        TextInputType.number, (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'head_chfid_is_required'.tr;
-                          }
-                          if (value.length != 10) {
-                            return 'Head CHFID must be exactly 10 digits';
-                          }
-                          return null;
-                        }),
-                  ),
-                  IconButton(
-                    icon: Icon(
+                  if (enrollmentId != null)
+                    IconButton(
+                      icon: HeroIcon(
+                        HeroIcons.camera,
+                        color: Colors.green.shade800,
+                        size: 30.0,
+                        style: HeroIconStyle.solid,
+                      ),
+                      onPressed: controller.pickAndCropPhoto,
+                    ),
+                  if(enrollmentId!=null)
+                    IconButton(
+                      icon: HeroIcon(
+                        HeroIcons.userPlus,
+                        color: Colors.green.shade800,
+                        size: 30.0,
+                        style: HeroIconStyle.solid,
+                      ),
+                      onPressed: () => { controller.onEnrollmentSubmit()},
+                    ),
+                  if (enrollmentId == null)
+                    Expanded(
+                      child: buildTextFormField(controller.headChfidController,
+                          'head_chfid'.tr, TextInputType.number, (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'head_chfid_is_required'.tr;
+                        }
+                        if (value.length != 10) {
+                          return 'Head CHFID must be exactly 10 digits';
+                        }
+                        return null;
+                      }),
+                    ),
+                  if (enrollmentId == null)
+                    IconButton(
+                      icon: Icon(
                         Icons.qr_code_scanner,
-                      color: Colors.green.shade400,
-                      size: 40,
-                    ), // Use HeroIcon with the desired icon
-                    onPressed: () => controller.scanQRCode(controller.headChfidController),
-                  ),
-
+                        color: Colors.green.shade400,
+                        size: 40,
+                      ), // Use HeroIcon with the desired icon
+                      onPressed: () =>
+                          controller.scanQRCode(controller.headChfidController),
+                    ),
                 ],
               ),
 
@@ -174,11 +196,12 @@ class EnrollmentForm extends StatelessWidget {
                       'Other',
                       'Spouse'
                     ]),
-                      SizedBox.shrink()
+                    SizedBox.shrink()
                   ]),
                 ],
               ),
               HealthServiceProviderDropdown(),
+
               SizedBox(height: 16),
 
               Obx(() {
@@ -198,9 +221,7 @@ class EnrollmentForm extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-
-                            if(enrollmentId==null)
-                              FamilyForm(),
+                            if (enrollmentId == null) FamilyForm(),
                           ],
                         ))
                     : Text("");

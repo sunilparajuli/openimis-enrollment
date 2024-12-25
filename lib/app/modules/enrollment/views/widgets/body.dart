@@ -96,6 +96,7 @@ class Body extends StatelessWidget {
             ],
           ),
           body: TabBarView(controller: controller.tabController, children: [
+            EnrollmentListPage(),
             Obx(() {
               return controller.enrollmentState.when(
                   idle: () => EnrollmentForm(),
@@ -105,8 +106,7 @@ class Body extends StatelessWidget {
                     return (EnrollmentForm());
                     // Default widget when none of the states match
                   });
-            }),
-            EnrollmentListPage(),
+            })
           ])),
     );
   }

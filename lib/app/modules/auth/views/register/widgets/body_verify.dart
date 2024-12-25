@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -17,7 +19,7 @@ class BodyVerify extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 29.w),
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -26,16 +28,53 @@ class BodyVerify extends GetView<AuthController> {
             SizedBox(height: 30.h),
             // if (controller.registerType == RegisterType.CUSTOMER)
             //   const EmployeeForm(),
-              const EmployeeForm(),
+            EmployeeForm(),
             SizedBox(height: 50.h),
-            ElevatedButton(onPressed: () => Get.offAllNamed(Routes.OTP), child: Text("SignUp")),
-            // ButtonWithText(
-            //   btnLabel: AppStrings.signup.toUpperCase(),
-            //   firstTextSpan: AppStrings.alreadyHaveAnAccount,
-            //   secondTextSpan: AppStrings.signIn,
-            //   onTap:  controller.onRegisterSubmit,
-            //   onTextTap: () => Get.offNamed(Routes.OTP),
-            // ),
+            Obx(() {
+              return controller.registerState.when(
+                idle: () => ButtonWithText(
+                    btnLabel: AppStrings.signup,
+                    firstTextSpan: AppStrings.alreadyHaveAnAccount,
+                    secondTextSpan: AppStrings.signIn,
+                    onTap: () async {
+                      controller.verifyInsuree();
+                    },
+                    onTextTap: () {
+                      Get.toNamed('/login');
+                    }),
+                loading: () => ElevatedButton(
+                  onPressed: null, // Disable button while loading
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white), // Set color for indicator
+                  ),
+                ),
+                failure: (reason) => Text("Error: $reason"),
+                success: (data) {
+                  Timer(Duration(seconds: 1), () {
+                    Get.toNamed(Routes
+                        .OTP); // Navigate to the OTP route after the delay
+                  });
+
+                  return ButtonWithText(
+                    btnLabel: AppStrings.signup,
+                    firstTextSpan: AppStrings.alreadyHaveAnAccount,
+                    secondTextSpan: AppStrings.signIn,
+                    onTap: () async {
+                      controller.verifyInsuree();
+                    },
+                    onTextTap: () {
+                      Get.toNamed('/login');
+                    },
+                  );
+
+                  //   Container(
+                  //   child: Center(child: Text("Validate OTP now"),),
+                  // ); // Return an empty container as a placeholder
+                },
+              );
+            }),
+
             SizedBox(height: 50.h),
           ],
         ),

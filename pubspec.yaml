@@ -5,12 +5,12 @@ description: A new Flutter project.
 environment: 
   sdk: '>=2.18.0 <3.0.0'
 
-dependencies: 
+dependencies:
   cupertino_icons: ^1.0.2
   change_app_package_name:
   get: 4.6.5
   flutter_typeahead: ^4.3.0
-  google_fonts: 4.0.1
+  google_fonts:
   flutter_screenutil: 5.9.3
   cached_network_image:
   image_picker:
@@ -23,9 +23,9 @@ dependencies:
   path: ^1.8.0
   firebase_core:
   firebase_messaging:
-  flutter_svg: 1.1.5
+  flutter_svg:
   lottie: 1.4.2
-  carousel_slider: 4.1.1
+  carousel_slider: ^4.2.1
   flutter_markdown: 0.6.12
   persistent_bottom_nav_bar_v2: 4.2.5
   dio: 4.0.6
@@ -33,20 +33,25 @@ dependencies:
   freezed_annotation: ^2.1.0
   json_annotation: ^4.7.0
   intl:
-  syncfusion_flutter_pdfviewer:
+  flutter_image_compress:
   otp_text_field:
   get_storage: 2.0.3
-  heroicons: 0.7.0
+  heroicons:
   form_field_validator: 1.1.0
   intl_phone_field: 3.1.0
   shimmer: 2.0.0
   awesome_dialog:
-  awesome_snackbar_content: 0.0.8
+  awesome_snackbar_content:
   country_codes: 2.2.0
   smooth_page_indicator: 1.0.0+2
-  url_launcher: 6.1.6
-  flutter_svg_provider: 1.0.3
+  url_launcher:
+  url_launcher_ios:
+  flutter_svg_provider:
   expandable: 5.0.1
+  khalti_flutter: ^3.0.0
+  flutter_local_notifications:
+  connectivity_plus: ^5.0.2
+  webview_flutter: 3.0.4
   flutter: 
     sdk: flutter
 
@@ -57,7 +62,7 @@ dev_dependencies:
   json_serializable: ^6.4.0
   flutter_native_splash: ^2.2.13
   logger: 1.1.0
-  device_preview:
+#  device_preview:
   flutter_test: 
     sdk: flutter
 

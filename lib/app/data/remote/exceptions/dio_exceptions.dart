@@ -42,11 +42,52 @@ class DioExceptions implements Exception {
 
   String _getErrorMessage(DioError error) {
     String errorType = error.type.toString().split('.').last;
-    String errorMessage = _errorTypes[errorType] ??
-        error.response?.data['error'] ??
-        _errorCodes[error.response?.statusCode.toString()] ??
-        'Something went wrong';
+    String errorMessage;
+
+    // Check for status code 400 (Bad Request)
+    if (error.response?.statusCode == 400 && error.response?.data != null) {
+      // Handle a list of errors in the response data
+      errorMessage = _extractErrorMessages(error.response!.data);
+    } else {
+      // Attempt to extract the error message from error.response?.data or error.response?.error
+      var responseData = error.response?.data;
+      var errorData = responseData is Map<String, dynamic> ? responseData['error'] : null;
+
+      // Handle other error cases
+      errorMessage = _errorTypes[errorType] ??
+          errorData ??
+          _errorCodes[error.response?.statusCode.toString()] ??
+          'Something went wrong';
+    }
+
     return errorMessage;
+  }
+
+
+  String _extractErrorMessages(dynamic errorData) {
+    List<String> errorMessages = [];
+
+    if (errorData is Map<String, dynamic>) {
+      errorData.forEach((key, value) {
+        if (value is List) {
+          for (var msg in value) {
+            errorMessages.add(msg.toString());
+          }
+        } else if (value is String) {
+          errorMessages.add(value);
+        } else if (value is Map<String, dynamic>) {
+          errorMessages.add(_extractErrorMessages(value)); // Recursively handle nested maps
+        }
+      });
+    } else if (errorData is List) {
+      for (var item in errorData) {
+        errorMessages.add(item.toString());
+      }
+    } else if (errorData is String) {
+      errorMessages.add(errorData);
+    }
+
+    return errorMessages.join('\n');
   }
 
   @override

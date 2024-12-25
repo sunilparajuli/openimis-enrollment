@@ -9,7 +9,6 @@ class DashboardScreen extends StatelessWidget {
     DashboardItem(name: 'Enrollment', icon: Icons.person_add_alt_1_rounded),
     DashboardItem(name: 'Inquire', icon: Icons.search),
     DashboardItem(name: 'Help', icon: Icons.help),
-
   ];
 
   @override
@@ -23,9 +22,11 @@ class DashboardScreen extends StatelessWidget {
           mainAxisSpacing: 16.0,
           childAspectRatio: 1,
         ),
-        delegate: SliverChildBuilderDelegate(
-              (context, index) {
-            return DashboardCard(item: items[index]);
+        delegate:
+        SliverChildBuilderDelegate(
+          (context, index) {
+            return
+              DashboardCard(item: items[index]);
           },
           childCount: items.length,
         ),
@@ -55,9 +56,7 @@ class DashboardCard extends StatelessWidget {
       elevation: 4.0,
       child: InkWell(
         onTap: () {
-
-            Get.to(() => HelpScreen());
-
+          Get.to(() => HelpScreen());
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),

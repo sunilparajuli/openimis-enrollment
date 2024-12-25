@@ -1,4 +1,7 @@
-import 'package:openimis_app/app/data/remote/base/idto.dart';
+import 'package:openimis_app/app/data/local/entities/user_entity.dart' as local_entities;
+
+
+import '../../base/idto.dart';
 
 class LoginOutDto implements IDto {
   LoginOutDto({
@@ -11,6 +14,9 @@ class LoginOutDto implements IDto {
     this.lastName,
     this.email,
     this.userType,
+    this.isOfficer,
+    this.isInsuree,
+    this.insureeInfo, // Specify the correct `InsureeInfo` class
   });
 
   LoginOutDto.fromJson(dynamic json) {
@@ -23,6 +29,11 @@ class LoginOutDto implements IDto {
     lastName = json['last_name'];
     email = json['email'];
     userType = json['user_type'];
+    isOfficer = json['is_officer'];
+    isInsuree = json['is_insuree'];
+    insureeInfo = json['insuree_info'] != null
+        ? local_entities.InsureeInfo.fromJson(json['insuree_info']) // Use `local_entities.InsureeInfo`
+        : null;
   }
 
   String? refresh;
@@ -34,6 +45,9 @@ class LoginOutDto implements IDto {
   String? lastName;
   String? email;
   dynamic userType;
+  bool? isOfficer;
+  bool? isInsuree;
+  local_entities.InsureeInfo? insureeInfo; // Use the specific InsureeInfo class here
 
   LoginOutDto copyWith({
     String? refresh,
@@ -45,6 +59,9 @@ class LoginOutDto implements IDto {
     String? lastName,
     String? email,
     dynamic userType,
+    bool? isOfficer,
+    bool? isInsuree,
+    local_entities.InsureeInfo? insureeInfo, // Specify the correct class
   }) =>
       LoginOutDto(
         refresh: refresh ?? this.refresh,
@@ -56,6 +73,9 @@ class LoginOutDto implements IDto {
         lastName: lastName ?? this.lastName,
         email: email ?? this.email,
         userType: userType ?? this.userType,
+        isOfficer: isOfficer ?? this.isOfficer,
+        isInsuree: isInsuree ?? this.isInsuree,
+        insureeInfo: insureeInfo ?? this.insureeInfo,
       );
 
   Map<String, dynamic> toJson() {
@@ -69,31 +89,11 @@ class LoginOutDto implements IDto {
     map['last_name'] = lastName;
     map['email'] = email;
     map['user_type'] = userType;
-    return map;
-  }
-}
-
-class Token {
-  Token({
-    this.access,
-  });
-
-  Token.fromJson(dynamic json) {
-    access = json['access'];
-  }
-
-  String? access;
-
-  Token copyWith({
-    String? access,
-  }) =>
-      Token(
-        access: access ?? this.access,
-      );
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['access'] = access;
+    map['is_officer'] = isOfficer;
+    map['is_insuree'] = isInsuree;
+    if (insureeInfo != null) {
+      map['insuree_info'] = insureeInfo!.toJson();
+    }
     return map;
   }
 }

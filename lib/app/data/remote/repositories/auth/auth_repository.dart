@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../../utils/api_response.dart';
 import '../../../local/base/i_entity.dart';
 import '../../../local/config/app_config.dart';
 import '../../../local/services/storage_service.dart';
@@ -82,6 +85,77 @@ class AuthRepository implements IAuthRepository<Status<dynamic>> {
   Future<Status> registerCustomer({required IDto dto}) {
     // TODO: implement registerCustomer
     throw UnimplementedError();
+  }
+
+  @override
+  Future<AsyncResult<String>> insureeOTPValidation(data) async {
+    try {
+      final response = await authService.insureeOtpValidation(data);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return AsyncResult.success("Enrollment successful.");
+
+      }
+
+      return AsyncResult.failure(response.data['message'] ?? "Unknown error occurred.");
+    } on DioError catch (e) {
+      final errMsg = DioExceptions.fromDioError(e).toString();
+      return AsyncResult.failure(errMsg);
+    }
+  }
+
+
+  @override
+  Future<AsyncResult<String>> insureeValidation(data) async {
+    try {
+      final response = await authService.insureeValidation(data);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return AsyncResult.success("Success OTP has been sent to your Mobile Number");
+      }
+
+      return AsyncResult.failure(response.data ?? "Unknown error occurred.");
+    } on DioError catch (e) {
+      final errMsg = DioExceptions.fromDioError(e).toString();
+      return AsyncResult.failure(errMsg);
+      //showSnackBarOnFailure()
+      return AsyncResult.failure(e.response!.data);
+    }
+  }
+
+  @override
+  Future<AsyncResult<bool>> usernameVerify(data) async{
+    try {
+      final response = await authService.userNameVerify(data);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return AsyncResult.success(true);
+      }
+
+      return AsyncResult.failure(response.data ?? "Unknown error occurred.");
+    } on DioError catch (e) {
+      final errMsg = DioExceptions.fromDioError(e).toString();
+      return AsyncResult.failure(errMsg);
+      //showSnackBarOnFailure()
+      return AsyncResult.failure(e.response!.data);
+    }
+  }
+
+  @override
+  Future<AsyncResult<String>> insureeOTPResend(data) async{
+    try {
+      final response = await authService.insureeOtpResend(data);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return AsyncResult.success("Otp sent");
+
+      }
+
+      return AsyncResult.failure(response.data['message'] ?? "Unknown error occurred.");
+    } on DioError catch (e) {
+      final errMsg = DioExceptions.fromDioError(e).toString();
+      return AsyncResult.failure(errMsg);
+    }
   }
   
 }
