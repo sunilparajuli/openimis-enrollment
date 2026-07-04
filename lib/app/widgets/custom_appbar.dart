@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: GoogleFonts.poppins(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
-                color: Get.theme.colorScheme.onBackground,
+                color: Get.theme.colorScheme.onSurface,
               ),
             )
           : null,

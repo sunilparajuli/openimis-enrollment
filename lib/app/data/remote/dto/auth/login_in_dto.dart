@@ -23,6 +23,7 @@ class LoginInDto implements IDto {
         password: password ?? this.password,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['username'] = username;

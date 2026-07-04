@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:openimis_app/app/data/remote/dto/customer/claim_is_dto.dart';
 import 'package:openimis_app/app/modules/Insuree/views/profile.dart';
 
-import '../../../data/remote/base/idto.dart';
 import '../../../data/remote/base/status.dart';
 import '../../../data/remote/dto/customer/claim_out_dto.dart';
 import '../../../data/remote/repositories/customer/customer_repository.dart';
@@ -48,17 +47,9 @@ class CustomerProfileController extends GetxController {
   }
 
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
-  var _notificationsEnabled = false.obs; // Reactive bool for idle state
+  final _notificationsEnabled = false.obs; // Reactive bool for idle state
 
   Future<void> toggleNotifications(bool value) async {
     _notificationsEnabled.value = value;
@@ -76,14 +67,14 @@ class CustomerProfileController extends GetxController {
   }
 
    getProfile() async {
-    _rxFHIRPatient.value = Status.loading();
+    _rxFHIRPatient.value = const Status.loading();
     final Status<FHIRPatient> results = await customerRepository.getProfile();
     _rxFHIRPatient.value = results;
   }
 
 
   getClaimResults() async {
-    _rxClaimResults.value = Status.loading();
+    _rxClaimResults.value = const Status.loading();
     if (true) {
       final Status<List<Claim>> results =
       await customerRepository.getAllCalims(customerUuid: "112112");
@@ -92,7 +83,7 @@ class CustomerProfileController extends GetxController {
   }
 
   getClaimServItemsResults(int claimID) async {
-    _rxClaimServItemResults.value = Status.loading();
+    _rxClaimServItemResults.value = const Status.loading();
     if (true) {
       final Status<InsureeClaimResponse> results =
       await customerRepository.getServItems(claimID: claimID);
@@ -101,7 +92,7 @@ class CustomerProfileController extends GetxController {
   }
 
   saveFcmToken() async {
-    _rxFcmToken.value = Status.loading();
+    _rxFcmToken.value = const Status.loading();
     if (true) {
       final token = await getFcmDeviceToken();
       final Status results =

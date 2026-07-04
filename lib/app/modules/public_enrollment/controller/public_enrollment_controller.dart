@@ -11,18 +11,15 @@ import 'package:openimis_app/app/data/remote/dto/customer/national_id.dto.dart';
 import 'package:openimis_app/app/data/remote/repositories/public_enrollment/public_enrollment_repository.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/LocationDto.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/MembershipDto.dart';
-import 'package:openimis_app/app/modules/policy/views/widgets/qr_view.dart';
 import 'package:openimis_app/app/modules/public_enrollment/controller/HospitalDto.dart'; // Correct import path
 
 import '../../../data/remote/base/status.dart';
 import '../../../di/locator.dart';
-import '../../../utils/database_helper.dart';
 import '../../../utils/functions.dart';
 import '../../../utils/public_database_helper.dart';
 import '../../../widgets/snackbars.dart';
 import '../views/widgets/enrollment_members.dart';
-import '../views/widgets/paypal_service.dart';
-import '../views/widgets/public_enrollment_list.dart';
+
 import '../views/widgets/qr_view.dart';
 import '../views/widgets/submit_botton_sheet.dart';
 import 'DropdownDto.dart';
@@ -35,7 +32,7 @@ class Instruction {
 
   Instruction({required this.text, this.isAcknowledged = false});
 }
-class PublicEnrollmentController extends GetxController with SingleGetTickerProviderMixin {
+class PublicEnrollmentController extends GetxController with GetSingleTickerProviderStateMixin {
   final GlobalKey<FormState> enrollmentFormKey = GlobalKey<FormState>();
   final GetStorage _storage = GetStorage(); // Use GetStorage for local storage
 
@@ -128,10 +125,8 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
         members.value = List<Map<String, dynamic>>.from(data);
         // If you want to get head member or handle separately
         var headMember = data.firstWhere((member) => member['isHead'] == 1);
-        if (headMember != null) {
-          family.value = headMember; // If the family data comes from the head member, you can use it here
-        }
-      } else {
+        family.value = headMember; // If the family data comes from the head member, you can use it here
+            } else {
         errorMessage.value = 'No data found';
       }
     } catch (e) {
@@ -277,7 +272,7 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
   }
 
   Future<void> getAllHospitals() async {
-    _rxHospitalState.value = Status.loading();  // Set loading state initially
+    _rxHospitalState.value = const Status.loading();  // Set loading state initially
 
     // Fetch data from repository
     final Status<List<PublicHealthServiceProvider>> state = await _public_enrollmentRepository.getHospitals();
@@ -292,7 +287,7 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
   }
 
   Future<void> getMembershipCard(String uuid) async {
-    _rxMemberShipCard.value = Status.loading();
+    _rxMemberShipCard.value = const Status.loading();
     final Status<MemberShipCard> state = await _public_enrollmentRepository.getMembershipCard(uuid: uuid);
     state.whenOrNull(
         success: (data) {
@@ -304,7 +299,7 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
 
 
   Future<void> getNationalIdInformation(String nationalID) async {
-    _rxNationalID.value = Status.loading();  // Set loading state initially
+    _rxNationalID.value = const Status.loading();  // Set loading state initially
     // Fetch data from repository
     final Status<NationalID> state = await _public_enrollmentRepository.getNationalId(nationalID);
     state.whenOrNull(
@@ -527,7 +522,7 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
   Future<void> onEnrollmentOnline() async {
     isLoading.value = true;
     try {
-      _rxEnrollmentState.value = Status.loading();
+      _rxEnrollmentState.value = const Status.loading();
 
       // Step 1: Prepare the enrollment payload
       final requestData = await prepareEnrollmentPayload();
@@ -556,7 +551,7 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
       SnackBars.failure("Error", error.toString());
     } finally {
       isLoading.value = false;
-      _rxEnrollmentState.value = Status.idle();
+      _rxEnrollmentState.value = const Status.idle();
     }
   }
 
@@ -589,26 +584,59 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
     return requestData;
   }
 
+  Future<String?> getPaypalAccessToken() async {
+    final status = await _public_enrollmentRepository.getPaypalAccessToken();
+    return status.when(
+      idle: () => null,
+      loading: () => null,
+      success: (data) => data,
+      failure: (reason) {
+        Get.snackbar("Error", reason ?? "Unknown error");
+        return null;
+      },
+    );
+  }
+
+  Future<Map<String, String>?> createPaypalPayment(Map<String, dynamic> transactions, String accessToken) async {
+    final status = await _public_enrollmentRepository.createPaypalPayment(transactions, accessToken);
+    return status.when(
+      idle: () => null,
+      loading: () => null,
+      success: (data) => data,
+      failure: (reason) {
+        Get.snackbar("Error", reason ?? "Unknown error");
+        return null;
+      },
+    );
+  }
+
   Future<void> postEnrollmentAfterPayment(String url, String payerId, String accessToken) async {
     try {
       // Prepare the enrollment payload
       final requestData = await prepareEnrollmentPayload();
 
       // Execute the payment API call and get the full response
-      final paymentResponse = await PaypalServices().executePayment(url, payerId, accessToken);
+      final status = await _public_enrollmentRepository.executePaypalPayment(url, payerId, accessToken);
 
-      if (paymentResponse == null) {
-        throw Exception("Payment execution failed.");
+      Map<String, dynamic>? paymentResponse;
+      status.when(
+        idle: () {},
+        loading: () {},
+        success: (response) {
+          if (response == null || !response.containsKey('id')) {
+            throw Exception("Payment response is invalid or missing the 'id'.");
+          }
+          paymentResponse = response;
+          // Include the payment details in the payload
+          requestData['payment_id'] = response['id'];
+        },
+        failure: (reason) {
+          throw Exception(reason ?? "Payment execution failed.");
+        }
+      );
+      if (paymentResponse != null) {
+        requestData['payments'] = paymentResponse; // Add the full payment response as an array
       }
-
-      // Ensure the response contains the necessary payment information
-      if (!paymentResponse.containsKey('id')) {
-        throw Exception("Payment response is invalid or missing the 'id'.");
-      }
-
-      // Include the payment details in the payload
-      requestData['payment_id'] = paymentResponse['id'];
-      requestData['payments'] = paymentResponse; // Add the full payment response as an array
 
       // Submit the enrollment data
       final response = await _public_enrollmentRepository.enrollmentSubmit(requestData);
@@ -740,7 +768,7 @@ class PublicEnrollmentController extends GetxController with SingleGetTickerProv
   void showSnackBarOnFailure(String? err) {
     Get.closeAllSnackbars();
     SnackBars.failure("Oops!", err.toString());
-    _rxEnrollmentState.value = Status.idle();
+    _rxEnrollmentState.value = const Status.idle();
   }
 
 

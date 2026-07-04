@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class FamilyMemberDetails extends StatelessWidget {
   final List<Map<String, dynamic>> families;
 
-  const FamilyMemberDetails({required this.families});
+  const FamilyMemberDetails({super.key, required this.families});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class FamilyMemberDetails extends StatelessWidget {
         Table(
           border: TableBorder.all(),
           children: [
-            TableRow(children: [
+            const TableRow(children: [
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -49,23 +49,23 @@ class FamilyMemberDetails extends StatelessWidget {
             ...families.expand((family) => family['members'].map<TableRow>((member) {
               return TableRow(children: [
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member['fullname']),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member['date_of_birth']),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member['insuree_gender']),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member['first_service_point']),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member['policy_status']),
                 ),
               ]);

@@ -1,13 +1,11 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../utils/database_helper.dart';
 import '../views/widgets/qr_view.dart';
 import 'dart:io';
 
-class PolicyController extends GetxController with SingleGetTickerProviderMixin {
+class PolicyController extends GetxController with GetSingleTickerProviderStateMixin {
   final GlobalKey<FormState> policyFormKey = GlobalKey<FormState>();
   final headInsureeChfidController = TextEditingController();
   final receiptNoController = TextEditingController();
@@ -23,6 +21,7 @@ class PolicyController extends GetxController with SingleGetTickerProviderMixin 
   var selectedFileName = ''.obs;
   File? attachment;
 
+  @override
   void onInit() {
     super.onInit();
     tabController = TabController(length: 2, vsync: this);
@@ -92,13 +91,7 @@ class PolicyController extends GetxController with SingleGetTickerProviderMixin 
 
   Future<void> savePolicy() async {
     if (policyFormKey.currentState!.validate()) {
-      final policyData = {
-        'headInsureeChfid': headInsureeChfidController.text,
-        'receiptNo': receiptNoController.text,
-        'noOfFamily': int.parse(noOfFamilyController.text),
-        'amount': int.parse(amountController.text),
-        'enrolledDate': enrolledDateController.text,
-      };
+
 
      // await DatabaseHelper().insertPolicy(policyData);
       fetchPolicies(); // Refresh policies list
@@ -109,13 +102,7 @@ class PolicyController extends GetxController with SingleGetTickerProviderMixin 
 
   Future<void> savePolicyOffline() async {
     if (policyFormKey.currentState!.validate()) {
-      final policyData = {
-        'headInsureeChfid': headInsureeChfidController.text,
-        'receiptNo': receiptNoController.text,
-        'noOfFamily': int.parse(noOfFamilyController.text),
-        'amount': int.parse(amountController.text),
-        'enrolledDate': enrolledDateController.text,
-      };
+
 
       //await DatabaseHelper().insertPolicy(policyData);
       fetchPolicies(); // Refresh policies list

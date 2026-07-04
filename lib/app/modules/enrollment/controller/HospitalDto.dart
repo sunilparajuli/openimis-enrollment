@@ -1,4 +1,3 @@
-import 'dart:convert';
 import '../../../data/remote/base/idto.dart';
 
 class Hospital implements IDto {
@@ -19,6 +18,7 @@ class Hospital implements IDto {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => {
     "success": success,
     "data": data != null ? List<dynamic>.from(data!.map((x) => x.toJson())) : null,
@@ -110,6 +110,7 @@ class HealthServiceProvider implements IDto {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => {
     "id": id,
     "json_ext": jsonExt,

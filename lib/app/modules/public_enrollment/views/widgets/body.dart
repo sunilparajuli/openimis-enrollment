@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:openimis_app/app/modules/public_enrollment/controller/public_enrollment_controller.dart';
-import 'package:openimis_app/app/modules/public_enrollment/views/widgets/public_contribution.dart';
-import 'package:openimis_app/app/modules/public_enrollment/views/widgets/public_enrollment_list.dart';
-import '../../../../utils/functions.dart';
 import '../../../../widgets/openimis_appbar.dart';
-import '../../../enrollment/views/widgets/contribution.dart';
-import '../../../enrollment/views/widgets/memberlist.dart';
 import 'memberlist.dart';
 import 'dart:io';
 import 'public_enrollment_form.dart';
@@ -30,7 +25,7 @@ class PublicEnrollmentBody extends StatelessWidget {
             actions: [
               Obx(
                     () => Visibility(
-                  visible: controller.enrollments.length < 1,
+                  visible: controller.enrollments.isEmpty,
                   child: IconButton(
                     icon: HeroIcon(
                       HeroIcons.camera,
@@ -87,7 +82,7 @@ class PublicEnrollmentBody extends StatelessWidget {
               // ),
               Obx(
                     () => Visibility(
-                  visible: controller.enrollments.length < 1,
+                  visible: controller.enrollments.isEmpty,
                   child: IconButton(
                     icon: HeroIcon(
                       HeroIcons.inboxArrowDown,
@@ -112,18 +107,18 @@ class PublicEnrollmentBody extends StatelessWidget {
           ),
           endDrawer: Drawer(
             child: ListView(
-              padding: EdgeInsets.all(1.0),
+              padding: const EdgeInsets.all(1.0),
               children: [
                 DrawerHeader(
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                   ),
-                  child: Text('Contribution and Voucher',
+                  child: const Text('Contribution and Voucher',
                       style: TextStyle(color: Colors.white, fontSize: 24)),
                 ),
                 ListTile(
-                  leading: Icon(Icons.attach_file),
-                  title: Text('Voucher Image'),
+                  leading: const Icon(Icons.attach_file),
+                  title: const Text('Voucher Image'),
                   onTap: () {
                     controller.pickVoucherImage();
                   },
@@ -142,8 +137,8 @@ class PublicEnrollmentBody extends StatelessWidget {
                           ),
                         ),
                         ListTile(
-                          title: Text('Remove Voucher'),
-                          trailing: Icon(Icons.delete),
+                          title: const Text('Remove Voucher'),
+                          trailing: const Icon(Icons.delete),
                           onTap: () {
                             controller.clearVoucherImage();
                           },
@@ -151,7 +146,7 @@ class PublicEnrollmentBody extends StatelessWidget {
                       ],
                     );
                   } else {
-                    return ListTile(
+                    return const ListTile(
                       title: Text('No Voucher Image'),
                     );
                   }
@@ -159,21 +154,21 @@ class PublicEnrollmentBody extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Contribution Information:',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                         'Premium Amount: ${controller.premiumAmount.value} ${controller.currency.value}'),
                     Text(
                         'Per Member: ${controller.perMember.value} ${controller.currency.value}'),
                     Text('Validity: ${controller.validity.value}'),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Obx(() {
                       return Text(
                         'Total Contribution: ${controller.calculateTotalContribution()} ${controller.currency.value}',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.green),
@@ -188,9 +183,9 @@ class PublicEnrollmentBody extends StatelessWidget {
           body: TabBarView(controller: controller.tabController, children: [
             //EnrollmentListPage(),
             Obx(() {
-              return controller.enrollments.length > 0
+              return controller.enrollments.isNotEmpty
                   ?
-              PublicFamilyMemberDetails()
+              const PublicFamilyMemberDetails()
 
                   : PublicEnrollmentForm();
             })

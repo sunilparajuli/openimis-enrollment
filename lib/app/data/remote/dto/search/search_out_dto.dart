@@ -23,6 +23,7 @@ class InsureeDetailsDto implements IDto {
         data: data ?? this.data,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['success'] = success;

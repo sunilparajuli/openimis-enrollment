@@ -23,6 +23,7 @@ class ToggleSaveOutDto implements IDto {
         saved: saved ?? this.saved,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['message'] = message;

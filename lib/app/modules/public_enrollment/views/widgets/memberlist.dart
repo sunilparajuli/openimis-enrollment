@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:openimis_app/app/modules/public_enrollment/views/widgets/public_contribution.dart';
 import 'package:openimis_app/app/modules/public_enrollment/views/widgets/public_enrollment_form.dart';
 import 'dart:convert';
@@ -9,7 +7,7 @@ import 'dart:convert';
 import '../../controller/public_enrollment_controller.dart'; // For JSON parsing
 
 class PublicFamilyMemberDetails extends StatefulWidget {
-  const PublicFamilyMemberDetails();
+  const PublicFamilyMemberDetails({super.key});
 
   @override
   _PublicFamilyMemberDetailsState createState() =>
@@ -29,7 +27,7 @@ class _PublicFamilyMemberDetailsState extends State<PublicFamilyMemberDetails> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,10 +36,10 @@ class _PublicFamilyMemberDetailsState extends State<PublicFamilyMemberDetails> {
             int totalMembers = controller.enrollments.length;
             return Text(
               'Total Family Members: $totalMembers',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             );
           }),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Obx(() {
             // Rebuild ListView when enrollments change
             return Expanded(
@@ -60,13 +58,13 @@ class _PublicFamilyMemberDetailsState extends State<PublicFamilyMemberDetails> {
                   String policyStatus = jsonContent['maritalStatus'] ?? 'N/A';
                   String photo = jsonContent['photo'] ?? 'N/A';
                   return Card(
-                    margin: EdgeInsets.only(bottom: 16),
+                    margin: const EdgeInsets.only(bottom: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                     elevation: 4,
                     child: ListTile(
-                      contentPadding: EdgeInsets.all(16.0),
+                      contentPadding: const EdgeInsets.all(16.0),
                       leading: photo.isNotEmpty
                           ? Image.memory(
                         base64Decode(photo), // Display the image from decoded base64 bytes
@@ -74,13 +72,13 @@ class _PublicFamilyMemberDetailsState extends State<PublicFamilyMemberDetails> {
                         height: 40,
                         fit: BoxFit.cover, // Optional: To make the image fit inside the box
                       )
-                          : Icon(
+                          : const Icon(
                         Icons.photo, // Fallback icon if no image is available
                         size: 40, // Adjust the icon size
                       ),
                       title: Text(
                         name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -88,7 +86,7 @@ class _PublicFamilyMemberDetailsState extends State<PublicFamilyMemberDetails> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text('DOB: $birthdate'),
                           Text('Gender: $gender'),
                           Text('Service Point: $servicePoint'),
@@ -162,12 +160,12 @@ class _PublicFamilyMemberDetailsState extends State<PublicFamilyMemberDetails> {
               ),
             );
           }),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             children: [
               ElevatedButton.icon(
-                icon: Icon(Icons.add),
-                label: Text(''),
+                icon: const Icon(Icons.add),
+                label: const Text(''),
                 onPressed: () {
                   _showAddMemberBottomSheet(context, controller);
                 },
@@ -177,12 +175,12 @@ class _PublicFamilyMemberDetailsState extends State<PublicFamilyMemberDetails> {
                   ),
                 ),
               ),
-              Spacer(), // Adds flexible space between the buttons
+              const Spacer(), // Adds flexible space between the buttons
               ElevatedButton.icon(
-                icon: Icon(Icons.arrow_forward), // Changed icon for clarity
-                label: Text(''),
+                icon: const Icon(Icons.arrow_forward), // Changed icon for clarity
+                label: const Text(''),
                 onPressed: () {
-                  Get.to(() => PublicContribution());
+                  Get.to(() => const PublicContribution());
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -208,14 +206,14 @@ void _showAddMemberBottomSheet(BuildContext context, controller) {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: <Widget>[
-            SizedBox(
+            const SizedBox(
               height: 15.0,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     controller.fetchPublicEnrollmentDetails();
                     Navigator.of(context).pop(); // Close the bottom sheet
@@ -234,11 +232,11 @@ void _showAddMemberBottomSheet(BuildContext context, controller) {
                   Navigator.pop(context);
                 }
               },
-              child: Text('Add'),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
                 backgroundColor: Colors.blue, // Button color
               ),
+              child: const Text('Add'),
             )
           ],
         ),

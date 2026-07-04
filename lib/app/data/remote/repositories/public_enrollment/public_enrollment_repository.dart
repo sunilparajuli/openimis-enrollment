@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:openimis_app/app/data/remote/dto/customer/national_id.dto.dart';
-import 'package:openimis_app/app/data/remote/services/enrollment/i_enrollment_service.dart';
-import 'package:openimis_app/app/modules/enrollment/controller/HospitalDto.dart';
 import 'package:openimis_app/app/utils/api_response.dart';
 
 import 'package:openimis_app/app/modules/public_enrollment/controller/HospitalDto.dart'; // Correct import path
@@ -39,6 +37,8 @@ class PublicEnrollmentRepository implements IPublicEnrollmentRepository<Enrollme
 
   @override
   Future<bool?> delete({required String uuid}) async {
+    return null;
+  
 
   }
 
@@ -174,5 +174,49 @@ class PublicEnrollmentRepository implements IPublicEnrollmentRepository<Enrollme
 
 
 
-}
+  @override
+  Future<Status<String>> getPaypalAccessToken() async {
+    try {
+      final response = await service.getPaypalAccessToken();
+      if (response.statusCode == 200) {
+        return Status.success(data: response.data["access_token"]);
+      }
+      return const Status.failure(reason: "Unknown error");
+    } on DioError catch (e) {
+      return Status.failure(reason: DioExceptions.fromDioError(e).toString());
+    }
+  }
 
+  @override
+  Future<Status<Map<String, String>>> createPaypalPayment(Map<String, dynamic> transactions, String accessToken) async {
+    try {
+      final response = await service.createPaypalPayment(transactions);
+      if (response.statusCode == 200) {
+        final body = response.data;
+        if (body.containsKey("approval_url") && body.containsKey("execute_url")) {
+          return Status.success(data: {
+            "executeUrl": body["execute_url"],
+            "approvalUrl": body["approval_url"]
+          });
+        }
+        return const Status.failure(reason: "Invalid response format");
+      }
+      return Status.failure(reason: response.data["message"] ?? "Unknown error");
+    } on DioError catch (e) {
+      return Status.failure(reason: DioExceptions.fromDioError(e).toString());
+    }
+  }
+
+  @override
+  Future<Status<Map<String, dynamic>>> executePaypalPayment(String url, String payerId, String accessToken) async {
+    try {
+      final response = await service.executePaypalPayment(url, payerId, accessToken);
+      if (response.statusCode == 200) {
+        return Status.success(data: response.data as Map<String, dynamic>);
+      }
+      return const Status.failure(reason: "Unknown error");
+    } on DioError catch (e) {
+      return Status.failure(reason: DioExceptions.fromDioError(e).toString());
+    }
+  }
+}

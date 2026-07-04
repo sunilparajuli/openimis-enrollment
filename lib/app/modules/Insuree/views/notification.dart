@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:openimis_app/app/modules/Insuree/controllers/customer_profile_controller.dart';
 
 class NotificationSettingsPage extends StatefulWidget {
 
 
   // Pass the method from your controller as a parameter
-  const NotificationSettingsPage();
+  const NotificationSettingsPage({super.key});
 
 
   @override
@@ -76,18 +75,18 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notification Settings'),
+        title: const Text('Notification Settings'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Enable Notifications',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Checkbox(
@@ -102,18 +101,18 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   _notificationsEnabled
                       ? 'Notifications are enabled'
                       : 'Enable notifications',
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_notificationsEnabled && _fcmToken != null)
               Text(
                 'FCM Token:\n$_fcmToken',
-                style: TextStyle(fontSize: 14, color: Colors.blue),
+                style: const TextStyle(fontSize: 14, color: Colors.blue),
               ),
             if (!_notificationsEnabled)
-              Text(
+              const Text(
                 'Notifications are disabled. Enable them to receive updates.',
                 style: TextStyle(fontSize: 14, color: Colors.red),
               ),

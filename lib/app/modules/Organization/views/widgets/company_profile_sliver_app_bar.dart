@@ -27,7 +27,7 @@ class CompanyProfileSliverAppBar extends GetView<CompanyProfileController> {
         child: IconButton(
           onPressed: () => Get.back(),
           style: IconButton.styleFrom(
-            backgroundColor: Colors.white.withOpacity(0.2),
+            backgroundColor: Colors.white.withValues(alpha: 0.2),
             padding: EdgeInsets.zero,
             minimumSize: Size.zero,
             shape: RoundedRectangleBorder(
@@ -44,7 +44,7 @@ class CompanyProfileSliverAppBar extends GetView<CompanyProfileController> {
       titleTextStyle: GoogleFonts.poppins(
         fontSize: 18.sp,
         fontWeight: FontWeight.w600,
-        color: Get.theme.backgroundColor,
+        color: Get.theme.colorScheme.surface,
       ),
       title: Padding(
         padding: EdgeInsets.symmetric(vertical: 6.h),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../controller/enrollment_controller.dart';
 import 'contribution.dart';
 import 'enrollment_form.dart';
@@ -12,7 +11,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
   final String chfid;
   final int? enrollmentId;
 
-  EnrollmentDetailsPage({required this.chfid, this.enrollmentId});
+  EnrollmentDetailsPage({super.key, required this.chfid, this.enrollmentId});
 
   final EnrollmentController enrollmentController =
       Get.put(EnrollmentController());
@@ -24,14 +23,14 @@ class EnrollmentDetailsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Enrollment Details'),
+        title: const Text('Enrollment Details'),
         actions: [
           Row(
             children: [
               Tooltip(
                 message: 'Voucher',
                 child: IconButton(
-                  icon: Icon(Icons.attach_file),
+                  icon: const Icon(Icons.attach_file),
                   onPressed: () {
                     // Call the method to pick the voucher image
                     enrollmentController.pickVoucherImage();
@@ -41,7 +40,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
               Tooltip(
                 message: 'Enroll',
                 child: IconButton(
-                  icon: Icon(Icons.people_rounded),
+                  icon: const Icon(Icons.people_rounded),
                   onPressed: () async {
                     // Call the method to pick the voucher image
                     enrollmentController.onEnrollmentOnline(
@@ -55,7 +54,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
                 child: Builder(
                   builder: (context) {
                     return IconButton(
-                      icon: Icon(Icons.menu), // Drawer icon
+                      icon: const Icon(Icons.menu), // Drawer icon
                       onPressed: () {
                         Scaffold.of(context)
                             .openEndDrawer(); // Open the right drawer
@@ -72,18 +71,18 @@ class EnrollmentDetailsPage extends StatelessWidget {
       // Right-side drawer (endDrawer)
       endDrawer: Drawer(
         child: ListView(
-          padding: EdgeInsets.all(1.0),
+          padding: const EdgeInsets.all(1.0),
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child: Text('Contribution and Voucher',
+              child: const Text('Contribution and Voucher',
                   style: TextStyle(color: Colors.white, fontSize: 24)),
             ),
             ListTile(
-              leading: Icon(Icons.attach_file),
-              title: Text('Voucher Image'),
+              leading: const Icon(Icons.attach_file),
+              title: const Text('Voucher Image'),
               onTap: () {
                 enrollmentController.pickVoucherImage();
               },
@@ -102,8 +101,8 @@ class EnrollmentDetailsPage extends StatelessWidget {
                       ),
                     ),
                     ListTile(
-                      title: Text('Remove Voucher'),
-                      trailing: Icon(Icons.delete),
+                      title: const Text('Remove Voucher'),
+                      trailing: const Icon(Icons.delete),
                       onTap: () {
                         enrollmentController.clearVoucherImage();
                       },
@@ -111,7 +110,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
                   ],
                 );
               } else {
-                return ListTile(
+                return const ListTile(
                   title: Text('No Voucher Image'),
                 );
               }
@@ -119,21 +118,21 @@ class EnrollmentDetailsPage extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Contribution Information:',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                     'Premium Amount: ${enrollmentController.premiumAmount.value} ${enrollmentController.currency.value}'),
                 Text(
                     'Per Member: ${enrollmentController.perMember.value} ${enrollmentController.currency.value}'),
                 Text('Validity: ${enrollmentController.validity.value}'),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Obx(() {
                   return Text(
                     'Total Contribution: ${enrollmentController.calculateTotalContribution()} ${enrollmentController.currency.value}',
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.green),
@@ -147,11 +146,11 @@ class EnrollmentDetailsPage extends StatelessWidget {
       ),
       body: SafeArea(child: Obx(() {
         if (enrollmentController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (enrollmentController.errorMessage.isNotEmpty) {
           return Center(child: Text(enrollmentController.errorMessage.value));
         } else if (enrollmentController.family.isEmpty) {
-          return Center(child: Text('No data found'));
+          return const Center(child: Text('No data found'));
         }
 
         final family = enrollmentController.family;
@@ -179,21 +178,21 @@ class EnrollmentDetailsPage extends StatelessWidget {
                       children: [
                         Text(
                           'CHFID: ${family['chfid']}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color:
                                 Colors.white, // Text color for better contrast
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           'Sync Status: ${family['sync'] == 1 ? 'Synced' : 'Not Synced'}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white, // Text color for sync status
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         FamilyDetail(
                           family: family,
                           enrollmentController: enrollmentController,
@@ -202,21 +201,21 @@ class EnrollmentDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text('Members:'),
+                const Text('Members:'),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: members.length,
                   itemBuilder: (context, index) {
                     final member = members[index];
                     return Card(
-                      margin: EdgeInsets.symmetric(vertical: 5),
+                      margin: const EdgeInsets.symmetric(vertical: 5),
                       child: ListTile(
                         iconColor: Colors.brown,
                         leading: CircleAvatar(
                           backgroundImage: member['photo'] != null
                               ? MemoryImage(base64Decode(member['photo']))
-                              : AssetImage('assets/images/placeholder.png')
+                              : const AssetImage('assets/images/placeholder.png')
                                   as ImageProvider,
                           radius: 30,
                         ),
@@ -227,14 +226,14 @@ class EnrollmentDetailsPage extends StatelessWidget {
                               .min, // Ensures the Row takes up minimum width
                           children: [
                             IconButton(
-                              icon: Icon(Icons.info_outline),
+                              icon: const Icon(Icons.info_outline),
                               onPressed: () {
                                 _showMemberDetailsPopup(
                                     context, member['json_content']);
                               },
                             ),
                             IconButton(
-                              icon: Icon(Icons.delete_outline),
+                              icon: const Icon(Icons.delete_outline),
                               color: Colors
                                   .red, // Set the color of the delete button to red
                               onPressed: () async {
@@ -248,7 +247,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
                     );
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -271,23 +270,23 @@ class EnrollmentDetailsPage extends StatelessWidget {
                         enrollmentController.onEnrollmentOnline(
                             enrollmentController.familyId.value);
                       },
-                      child: Text('Submit'),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor: Colors.blue, // Button color
                       ),
+                      child: const Text('Submit'),
                     ),
                   ),
-                  SizedBox(width: 16), // Add some spacing between the buttons
+                  const SizedBox(width: 16), // Add some spacing between the buttons
                   Expanded(
                     flex: 1, // 20% of the width
                     child: ElevatedButton(
                       onPressed: () => _showAddMemberBottomSheet(context),
-                      child: Icon(Icons.add_box_outlined),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor: Colors.blue, // Button color
                       ),
+                      child: const Icon(Icons.add_box_outlined),
                     ),
                   ),
                 ],
@@ -301,11 +300,11 @@ class EnrollmentDetailsPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: null, // Disable the button while loading
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor:
                             Colors.grey, // Button color during loading
                       ),
-                      child: SizedBox(
+                      child: const SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
@@ -316,17 +315,17 @@ class EnrollmentDetailsPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
-                      onPressed: null, // Disable the icon button while loading
-                      child: Icon(Icons.attach_money),
+                      onPressed: null,
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor:
                             Colors.grey, // Button color during loading
-                      ),
+                      ), // Disable the icon button while loading
+                      child: const Icon(Icons.attach_money),
                     ),
                   ),
                 ],
@@ -338,24 +337,24 @@ class EnrollmentDetailsPage extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: ElevatedButton(
-                      onPressed: null, // Disable the button after success
-                      child: Text('Success!'),
+                      onPressed: null,
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor: Colors.green, // Success color
-                      ),
+                      ), // Disable the button after success
+                      child: const Text('Success!'),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
-                      onPressed: null, // Disable the icon button after success
-                      child: Icon(Icons.attach_money),
+                      onPressed: null,
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor: Colors.green, // Success color
-                      ),
+                      ), // Disable the icon button after success
+                      child: const Icon(Icons.attach_money),
                     ),
                   ),
                 ],
@@ -370,25 +369,25 @@ class EnrollmentDetailsPage extends StatelessWidget {
                       onPressed: () {
                         // Handle retry logic here
                       },
-                      child: Text('Retry'),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor: Colors.red, // Failure color
                       ),
+                      child: const Text('Retry'),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
                       onPressed: () {
                         // Handle dollar icon button action on failure
                       },
-                      child: Icon(Icons.attach_money),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor: Colors.red, // Failure color
                       ),
+                      child: const Icon(Icons.attach_money),
                     ),
                   ),
                 ],
@@ -407,7 +406,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Member Details'),
+          title: const Text('Member Details'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,7 +417,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
                     children: [
                       Expanded(
                           child: Text('${entry.key}:',
-                              style: TextStyle(fontWeight: FontWeight.bold))),
+                              style: const TextStyle(fontWeight: FontWeight.bold))),
                       Expanded(child: Text('${entry.value}')),
                     ],
                   ),
@@ -431,7 +430,7 @@ class EnrollmentDetailsPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );

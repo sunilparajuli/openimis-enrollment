@@ -8,6 +8,8 @@ import 'package:openimis_app/app/modules/enrollment/controller/enrollment_contro
 class EnrollmentListPage extends StatelessWidget {
   final EnrollmentController controller = Get.put(EnrollmentController());
 
+  EnrollmentListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,7 +28,7 @@ class EnrollmentListPage extends StatelessWidget {
               }),
               Expanded(
                 child: TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Search by CHFID',
                     border: OutlineInputBorder(),
                   ),
@@ -42,7 +44,7 @@ class EnrollmentListPage extends StatelessWidget {
           child: Obx(() {
             final enrollments = controller.filteredEnrollments;
             return enrollments.isEmpty
-                ? Center(child: Text('No enrollments found'))
+                ? const Center(child: Text('No enrollments found'))
                 : ListView.builder(
                     itemCount: enrollments.length,
                     itemBuilder: (context, index) {
@@ -51,7 +53,7 @@ class EnrollmentListPage extends StatelessWidget {
                       final imageProvider = (photoBase64 != null &&
                               photoBase64.isNotEmpty)
                           ? Image.memory(base64Decode(photoBase64)).image
-                          : AssetImage(
+                          : const AssetImage(
                               'assets/openimis-logo.png'); // Replace with actual avatar path or URL
 
                       return Dismissible(
@@ -60,27 +62,27 @@ class EnrollmentListPage extends StatelessWidget {
                         background: Container(
                           color: Colors.red,
                           alignment: Alignment.centerRight,
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: Icon(Icons.delete, color: Colors.white),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Icon(Icons.delete, color: Colors.white),
                         ),
                         confirmDismiss: (direction) async {
                           return await showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: Text('Confirm Deletion'),
-                                content: Text(
+                                title: const Text('Confirm Deletion'),
+                                content: const Text(
                                     'Do you want to delete this enrollment?'),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.of(context)
                                         .pop(false), // User cancels
-                                    child: Text('Cancel'),
+                                    child: const Text('Cancel'),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.of(context)
                                         .pop(true), // User confirms
-                                    child: Text('Delete'),
+                                    child: const Text('Delete'),
                                   ),
                                 ],
                               );
@@ -98,12 +100,12 @@ class EnrollmentListPage extends StatelessWidget {
 
                           // Optionally, show a Snackbar to confirm deletion
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Enrollment deleted')),
+                            const SnackBar(content: Text('Enrollment deleted')),
                           );
                         },
                         child: Card(
                           elevation: 4,
-                          margin: EdgeInsets.all(10.0),
+                          margin: const EdgeInsets.all(10.0),
                           child: ListTile(
                             leading: CircleAvatar(
                               backgroundImage: imageProvider,
@@ -138,9 +140,8 @@ class EnrollmentListPage extends StatelessWidget {
                                 //   },
                                 // ),
                                 IconButton(
-                                  icon: Icon(Icons.add_box_outlined),
+                                  icon: const Icon(Icons.add_box_outlined),
                                   onPressed: () {
-                                    var k = enrollment['family']['id'];
                                     controller.familyId.value =
                                         enrollment['family']['id'];
                                     controller.confirmAddMember(
@@ -169,7 +170,7 @@ class EditEnrollmentDialog extends StatelessWidget {
   final EnrollmentController controller;
   final enrollment;
 
-  EditEnrollmentDialog({required this.controller, this.enrollment});
+  const EditEnrollmentDialog({super.key, required this.controller, this.enrollment});
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +191,7 @@ class EditEnrollmentDialog extends StatelessWidget {
               children: [
                 Text(
                   'Edit Enrollment',
-                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -273,7 +274,7 @@ class EditEnrollmentDialog extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () => Get.back(),
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                     SizedBox(width: 10.w), // Gap between buttons
                     TextButton(
@@ -281,7 +282,7 @@ class EditEnrollmentDialog extends StatelessWidget {
                         await controller.updateEnrollment(enrollment);
                         Get.back();
                       },
-                      child: Text('Save'),
+                      child: const Text('Save'),
                     ),
                   ],
                 ),
@@ -303,7 +304,7 @@ class EditEnrollmentDialog extends StatelessWidget {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       ),
     );
@@ -321,7 +322,7 @@ class EditEnrollmentDialog extends StatelessWidget {
           : null, // Ensure the value exists in items
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       ),
       items: items.map((item) {

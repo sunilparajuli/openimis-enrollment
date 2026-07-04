@@ -22,8 +22,8 @@ class ProfileHeader extends StatelessWidget {
           backgroundImage: NetworkImage(photoUrl),
           radius: 50,
         ),
-        SizedBox(height: 16),
-        Text(name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Text("$gender, Born on $birthDate"),
       ],
     );

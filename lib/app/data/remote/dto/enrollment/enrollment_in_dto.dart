@@ -54,9 +54,10 @@ class EnrollmentInDto implements IDto {
         description: description ?? this.description,
         location: location ?? this.location,
         workplace: workplace ?? this.workplace,
-        createdAt: created ?? this.createdAt,
+        createdAt: created ?? createdAt,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;

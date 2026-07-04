@@ -44,6 +44,7 @@ class LocationDto implements IDto {
     village = json['Village'] != null ? Village.fromJson(json['Village']) : null;
   }
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;

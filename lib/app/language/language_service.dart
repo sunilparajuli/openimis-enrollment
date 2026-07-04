@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 
 class LanguageService {
@@ -14,7 +13,7 @@ class LanguageService {
 
   void _loadCurrentLocale() async {
 
-    final localeCode = await _storage.read<String>('language');
+    final localeCode = _storage.read<String>('language');
     if (localeCode != null) {
       final parts = localeCode.split('_');
       _selectedLocale.value = Locale(parts[0], parts.length > 1 ? parts[1] : '');

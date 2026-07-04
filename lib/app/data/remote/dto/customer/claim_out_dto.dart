@@ -118,7 +118,7 @@ class Claim implements IDto {
       jsonExt: json['json_ext'],
       validityFrom: DateTime.parse(json['validity_from']),
       validityTo: json['validity_to'] != null ? DateTime.parse(json['validity_to']) : null,
-      legacyId: json['legacy_id'].toString() ?? "",
+      legacyId: json['legacy_id']?.toString() ?? "",
       uuid: json['uuid'],
       category: json['category'],
       code: json['code'],
@@ -157,7 +157,7 @@ class Claim implements IDto {
       restore: json['restore'],
       adjuster: json['adjuster'],
       feedback: json['feedback'],
-      batchRun: json['batch_run'].toString() ?? "",
+      batchRun: json['batch_run']?.toString() ?? "",
       healthFacility: json['health_facility'],
       admin: json['admin'],
       referFrom: json['refer_from'],
@@ -171,6 +171,7 @@ class Claim implements IDto {
   }
 
   // Method to convert a Claim instance back to JSON
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,

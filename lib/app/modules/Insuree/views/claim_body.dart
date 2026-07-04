@@ -25,7 +25,7 @@ class ClaimBody extends GetView<CustomerProfileController> {
                   child: CustomTextField(
                     controller: controller.searchController,
                     autofocus: false,
-                    hintText: '${AppStrings.SEARCH_HINT}'.tr,
+                    hintText: AppStrings.SEARCH_HINT.tr,
                     isSearchBar: true,
                     maxLines: 1,
                     prefixIcon: HeroIcons.magnifyingGlass,
@@ -37,7 +37,7 @@ class ClaimBody extends GetView<CustomerProfileController> {
               ],
             ),
             SizedBox(height: 20.h),
-            ClaimResults(), // Your ClaimResults widget here
+            const ClaimResults(), // Your ClaimResults widget here
             SizedBox(height: 20.h),
           ],
         ),

@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class QRViewEnrollment extends StatefulWidget {
   final TextEditingController controller;
 
-  QRViewEnrollment({required this.controller});
+  const QRViewEnrollment({super.key, required this.controller});
 
   @override
   _QRViewEnrollmentState createState() => _QRViewEnrollmentState();
@@ -31,7 +31,7 @@ class _QRViewEnrollmentState extends State<QRViewEnrollment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scan QR Code'),
+        title: const Text('Scan QR Code'),
       ),
       body: Column(
         children: <Widget>[
@@ -54,7 +54,7 @@ class _QRViewEnrollmentState extends State<QRViewEnrollment> {
             child: Center(
               child: (result != null)
                   ? Text('Barcode Type: ${result!.format}   Data: ${result!.code}')
-                  : Text('Scan a code'),
+                  : const Text('Scan a code'),
             ),
           ),
         ],
@@ -63,7 +63,7 @@ class _QRViewEnrollmentState extends State<QRViewEnrollment> {
   }
 
   void _onQRViewCreated(QRViewController qrController) {
-    this.controller = qrController;
+    controller = qrController;
     qrController.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;

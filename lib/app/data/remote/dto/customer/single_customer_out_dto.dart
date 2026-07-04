@@ -33,6 +33,7 @@ class SingleCustomerOutDto implements IDto {
         phone: phone ?? this.phone,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;

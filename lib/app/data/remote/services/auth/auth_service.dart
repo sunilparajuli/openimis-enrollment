@@ -1,6 +1,5 @@
-import 'package:dio/src/response.dart';
+import 'package:dio/dio.dart';
 
-import '../../../local/config/app_config.dart';
 import '../../api/api_routes.dart';
 import '../../api/dio_client.dart';
 import 'i_auth_service.dart';
@@ -27,7 +26,6 @@ class AuthService implements IAuthService<IDto> {
     throw UnimplementedError();
   }
 
-  @override
   Future<Response> insureeValidation(data) async {
     try {
       return await dioClient.post(ApiRoutes.INSUREE_VALIDATION, data: data);
@@ -36,7 +34,6 @@ class AuthService implements IAuthService<IDto> {
     }
   }
 
-  @override
   Future<Response> insureeOtpValidation(data) async {
     try {
       return await dioClient.post(ApiRoutes.INSUREE_OTP_VALIDATION, data: data);
@@ -45,7 +42,6 @@ class AuthService implements IAuthService<IDto> {
     }
   }
 
-  @override
   Future<Response> insureeOtpResend(data) async {
     try {
       return await dioClient.post(ApiRoutes.INSUREE_OTP_RESEND, data: data);
@@ -54,7 +50,6 @@ class AuthService implements IAuthService<IDto> {
     }
   }
 
-  @override
   Future<Response> userNameVerify(data) async {
     try {
       return await dioClient.post(ApiRoutes.USERNAME_VERIFY, data: data);
@@ -62,10 +57,4 @@ class AuthService implements IAuthService<IDto> {
       rethrow;
     }
   }
-
-
-
-
-
-
 }

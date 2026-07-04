@@ -22,6 +22,7 @@ class InsureeClaimResponse implements IDto {
   }
 
   // Convert instance to JSON
+  @override
   Map<String, dynamic> toJson() {
     return {
       'claimed_items': claimedItems.map((item) => item.toJson()).toList(),
@@ -51,14 +52,13 @@ class ClaimedItem implements IDto {
       itemName: json['item_name'],
       qtyProvided: json['qty_provided'].toDouble(),
       priceAsked: json['price_asked'].toDouble(),
-      priceApproved: json['price_approved'] != null
-          ? json['price_approved'].toDouble()
-          : null,
+      priceApproved: json['price_approved']?.toDouble(),
       status: json['status'],
     );
   }
 
   // Convert instance to JSON
+  @override
   Map<String, dynamic> toJson() {
     return {
       'item_name': itemName,
@@ -91,9 +91,7 @@ class ClaimedService {
       serviceName: json['service_name'],
       qtyProvided: json['qty_provided'].toDouble(),
       priceAsked: json['price_asked'].toDouble(),
-      priceApproved: json['price_approved'] != null
-          ? json['price_approved'].toDouble()
-          : null,
+      priceApproved: json['price_approved']?.toDouble(),
       status: json['status'],
     );
   }

@@ -5,13 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/values/strings.dart';
-import '../../../../../domain/enums/user_type.dart';
 import '../../../../../routes/app_pages.dart';
 import '../../../controllers/auth_controller.dart';
 import '../../widgets/button_with_text.dart';
 import '../../widgets/header.dart';
 import 'employee_form.dart';
-import 'employer_form.dart';
 
 class BodyVerify extends GetView<AuthController> {
   const BodyVerify({Key? key}) : super(key: key);
@@ -42,7 +40,7 @@ class BodyVerify extends GetView<AuthController> {
                     onTextTap: () {
                       Get.toNamed('/login');
                     }),
-                loading: () => ElevatedButton(
+                loading: () => const ElevatedButton(
                   onPressed: null, // Disable button while loading
                   child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
@@ -51,7 +49,7 @@ class BodyVerify extends GetView<AuthController> {
                 ),
                 failure: (reason) => Text("Error: $reason"),
                 success: (data) {
-                  Timer(Duration(seconds: 1), () {
+                  Timer(const Duration(seconds: 1), () {
                     Get.toNamed(Routes
                         .OTP); // Navigate to the OTP route after the delay
                   });

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
@@ -26,24 +25,21 @@ class AppTheme {
   static final lightTheme = ThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
     brightness: Brightness.light,
-    backgroundColor: backgroundColor,
     primaryColor: blueColor,
     hintColor: lightGrayColor,
     cardColor: whiteColor,
-    errorColor: errorColor,
     textTheme: _lightTextTheme,
-    colorScheme: _lightColorScheme,
     elevatedButtonTheme: _lightElevatedButtonTheme,
     inputDecorationTheme: _inputDecorationTheme,
-    useMaterial3: true,
+    useMaterial3: true, colorScheme: _lightColorScheme.copyWith(surface: backgroundColor).copyWith(error: errorColor),
   );
 
   static final _lightTextTheme = TextTheme(
-    button: GoogleFonts.poppins(
+    labelLarge: GoogleFonts.poppins(
       fontSize: 14.sp,
       fontWeight: FontWeight.w700,
     ),
-    caption: GoogleFonts.poppins(
+    bodySmall: GoogleFonts.poppins(
       fontSize: 13.sp,
       fontWeight: FontWeight.w400,
       color: lightGrayColor,
@@ -53,8 +49,8 @@ class AppTheme {
   static final _lightColorScheme = ColorScheme.fromSeed(
     seedColor: blueColor,
     brightness: Brightness.light,
-    background: backgroundColor,
-    onBackground: blackColor,
+    surface: backgroundColor,
+    onSurface: blackColor,
     primary: blueColor,
     onPrimary: backgroundColor,
     secondary: darkGrayColor,
@@ -65,8 +61,8 @@ class AppTheme {
     style: ElevatedButton.styleFrom(
       backgroundColor: blueColor,
       elevation: 10,
-      textStyle: _lightTextTheme.button,
-      shadowColor: blueColor.withOpacity(0.25),
+      textStyle: _lightTextTheme.labelLarge,
+      shadowColor: blueColor.withValues(alpha: 0.25),
       foregroundColor: backgroundColor,
       padding: EdgeInsets.all(16.w),
       shape: RoundedRectangleBorder(
@@ -79,15 +75,15 @@ class AppTheme {
 
   static final _inputDecorationTheme = InputDecorationTheme(
     contentPadding: EdgeInsets.all(16.w),
-    hintStyle: _lightTextTheme.caption,
-    errorStyle: _lightTextTheme.caption?.copyWith(
+    hintStyle: _lightTextTheme.bodySmall,
+    errorStyle: _lightTextTheme.bodySmall?.copyWith(
       color: errorColor,
       fontSize: 10.sp,
     ),
     fillColor: whiteColor,
     filled: true,
     errorMaxLines: 3,
-    counterStyle: _lightTextTheme.caption?.copyWith(fontSize: 10.sp),
+    counterStyle: _lightTextTheme.bodySmall?.copyWith(fontSize: 10.sp),
     suffixIconColor: darkGrayColor,
     prefixIconColor: lightGrayColor,
     enabledBorder: _outlineInputBorder,
@@ -101,7 +97,7 @@ class AppTheme {
   static final _outlineInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(14.r),
     borderSide: BorderSide(
-      color: blackColor.withOpacity(0.1),
+      color: blackColor.withValues(alpha: 0.1),
       width: 1.0,
     ),
   );
@@ -110,25 +106,22 @@ class AppTheme {
   static final darkTheme = ThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
     brightness: Brightness.dark,
-    backgroundColor: darkBackgroundColor,
     primaryColor: darkPrimaryColor,
     hintColor: darkHintColor,
     cardColor: darkCardColor,
-    errorColor: errorColor,
     textTheme: _darkTextTheme,
-    colorScheme: _darkColorScheme,
     elevatedButtonTheme: _darkElevatedButtonTheme,
     inputDecorationTheme: _darkInputDecorationTheme,
-    useMaterial3: true,
+    useMaterial3: true, colorScheme: _darkColorScheme.copyWith(surface: darkBackgroundColor).copyWith(error: errorColor),
   );
 
   static final _darkTextTheme = TextTheme(
-    button: GoogleFonts.poppins(
+    labelLarge: GoogleFonts.poppins(
       fontSize: 14.sp,
       fontWeight: FontWeight.w700,
       color: darkTextColor,
     ),
-    caption: GoogleFonts.poppins(
+    bodySmall: GoogleFonts.poppins(
       fontSize: 13.sp,
       fontWeight: FontWeight.w400,
       color: darkHintColor,
@@ -138,8 +131,8 @@ class AppTheme {
   static final _darkColorScheme = ColorScheme.fromSeed(
     seedColor: darkPrimaryColor,
     brightness: Brightness.dark,
-    background: darkBackgroundColor,
-    onBackground: darkTextColor,
+    surface: darkBackgroundColor,
+    onSurface: darkTextColor,
     primary: darkPrimaryColor,
     onPrimary: darkBackgroundColor,
     secondary: darkGrayColor,
@@ -150,8 +143,8 @@ class AppTheme {
     style: ElevatedButton.styleFrom(
       backgroundColor: darkPrimaryColor,
       elevation: 10,
-      textStyle: _darkTextTheme.button,
-      shadowColor: darkPrimaryColor.withOpacity(0.25),
+      textStyle: _darkTextTheme.labelLarge,
+      shadowColor: darkPrimaryColor.withValues(alpha: 0.25),
       foregroundColor: darkBackgroundColor,
       padding: EdgeInsets.all(16.w),
       shape: RoundedRectangleBorder(
@@ -164,15 +157,15 @@ class AppTheme {
 
   static final _darkInputDecorationTheme = InputDecorationTheme(
     contentPadding: EdgeInsets.all(16.w),
-    hintStyle: _darkTextTheme.caption,
-    errorStyle: _darkTextTheme.caption?.copyWith(
+    hintStyle: _darkTextTheme.bodySmall,
+    errorStyle: _darkTextTheme.bodySmall?.copyWith(
       color: errorColor,
       fontSize: 10.sp,
     ),
     fillColor: darkCardColor,
     filled: true,
     errorMaxLines: 3,
-    counterStyle: _darkTextTheme.caption?.copyWith(fontSize: 10.sp),
+    counterStyle: _darkTextTheme.bodySmall?.copyWith(fontSize: 10.sp),
     suffixIconColor: darkHintColor,
     prefixIconColor: darkGrayColor,
     enabledBorder: _darkOutlineInputBorder,
@@ -186,7 +179,7 @@ class AppTheme {
   static final _darkOutlineInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(14.r),
     borderSide: BorderSide(
-      color: darkGrayColor.withOpacity(0.1),
+      color: darkGrayColor.withValues(alpha: 0.1),
       width: 1.0,
     ),
   );

@@ -72,7 +72,7 @@ class InsureeInfo {
   String? lastName;
   String? chfid;
   String? uuid;
-  dynamic? family;
+  dynamic family;
 
   InsureeInfo({
     this.firstName,

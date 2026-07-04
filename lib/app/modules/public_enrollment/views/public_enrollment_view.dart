@@ -12,11 +12,11 @@ class PublicEnrollmentView extends GetView<PublicEnrollmentController> {
   Widget build(BuildContext context) {
     Get.put(PublicEnrollmentController());
     return Scaffold(
-      backgroundColor: Get.theme.colorScheme.background,
+      backgroundColor: Get.theme.colorScheme.surface,
       resizeToAvoidBottomInset: false,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: Get.theme.colorScheme.background,
+          statusBarColor: Get.theme.colorScheme.surface,
           statusBarIconBrightness: Brightness.dark,
           systemNavigationBarColor: Colors.white,
           systemNavigationBarIconBrightness: Brightness.dark,
@@ -32,7 +32,7 @@ class PublicEnrollmentView extends GetView<PublicEnrollmentController> {
                 children: [
                   Text(
                     "Instructions",
-                    style: Get.textTheme.headline6?.copyWith(
+                    style: Get.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -64,7 +64,7 @@ class PublicEnrollmentView extends GetView<PublicEnrollmentController> {
                       padding: EdgeInsets.symmetric(vertical: 16.h),
                       minimumSize: Size(double.infinity, 48.h),
                     ),
-                    child: Text("Proceed"),
+                    child: const Text("Proceed"),
                   ),
                   SizedBox(height: 16.h),
                   TextButton(
@@ -74,7 +74,7 @@ class PublicEnrollmentView extends GetView<PublicEnrollmentController> {
                       minimumSize: Size(double.infinity, 48.h),
                      // primary: Colors.red, // Red text for Cancel
                     ),
-                    child: Text("Cancel"),
+                    child: const Text("Cancel"),
                   ),
                 ],
               ),

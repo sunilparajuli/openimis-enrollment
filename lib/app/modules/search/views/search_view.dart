@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:openimis_app/app/modules/root/controllers/root_controller.dart';
 import 'package:openimis_app/app/widgets/openimis_appbar.dart';
 
-import '../controllers/search_controller.dart';
 import 'widgets/body.dart';
 
 class SearchView extends GetView<SearchController> {
@@ -11,16 +10,16 @@ class SearchView extends GetView<SearchController> {
 
   @override
   Widget build(BuildContext context) {
-    RootController _rootController = Get.put(RootController());
+    Get.put(RootController());
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Get.theme.backgroundColor,
+        backgroundColor: Get.theme.colorScheme.surface,
         resizeToAvoidBottomInset: true,
         appBar: OpenIMISAppBar(
             title: 'search'.tr,
             showActions: false,
         ),
-        body: Column(
+        body: const Column(
           children: [
             // Display connection status
             // Obx(() => Text(

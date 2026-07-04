@@ -1,7 +1,6 @@
 import 'package:openimis_app/app/data/remote/base/idto.dart';
 import 'dart:convert';
 
-import '../../remote/base/idto.dart';
 
 // To parse this JSON data, do
 //
@@ -31,6 +30,7 @@ class AppConfig implements IDto {
     supportEmail: json["support_email"] as String?,
   );
 
+  @override
   Map<String, dynamic> toJson() => {
     "domain_name": domainName,
     "app_version": appVersion,

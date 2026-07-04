@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../../../widgets/custom_text_field.dart';
 import '../../controller/public_enrollment_controller.dart';
 
 class FamilyDetail extends StatelessWidget {
-  dynamic family;
+  final dynamic family;
   final PublicEnrollmentController enrollmentController;
 
-  FamilyDetail({required this.family, required this.enrollmentController});
+  FamilyDetail({super.key, required this.family, required this.enrollmentController});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +13,7 @@ class FamilyDetail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
 
-        Text(
+        const Text(
           'Family Information:',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
@@ -30,7 +28,7 @@ class FamilyDetail extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
       ],
     );
   }

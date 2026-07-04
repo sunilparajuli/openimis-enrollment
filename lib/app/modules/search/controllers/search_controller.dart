@@ -18,10 +18,6 @@ class CSearchController extends GetxController {
 
   Status<List<InsureeDetailsDto>> get rxResults => _rxResults.value;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onReady() {
@@ -36,10 +32,10 @@ class CSearchController extends GetxController {
   }
 
   getSearchResult() async {
-    _rxResults.value = Status.loading();
+    _rxResults.value = const Status.loading();
 
     // Check if there is any search text; otherwise, pass an empty query.
-    authController.isInsuree() ? searchController.text = authController!.insureeInfo()!.chfid! : "";
+    authController.isInsuree() ? searchController.text = authController.insureeInfo()!.chfid! : "";
     final searchQuery = searchController.text;
 
     final Status<List<InsureeDetailsDto>> results =

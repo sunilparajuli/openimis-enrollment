@@ -24,6 +24,7 @@ class RegisterCustomerOutDto implements IDto {
         customer: customer ?? this.customer,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (token != null) {

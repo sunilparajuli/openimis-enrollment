@@ -20,7 +20,7 @@ class NoticesPage extends StatelessWidget {
           final notices = controller.notices; // Changed from supportedPartners to notices
           return ListView.separated(
             itemCount: notices.length,
-            separatorBuilder: (context, index) => SizedBox(height: 10),
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final notice = notices[index];
               return Container(
@@ -30,7 +30,7 @@ class NoticesPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       blurRadius: 4,
                       spreadRadius: 2,
                     ),
@@ -42,12 +42,12 @@ class NoticesPage extends StatelessWidget {
                     // Notice Title
                     Text(
                       notice['title'] ?? 'Untitled', // Use 'title' instead of 'name'
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     // Notice Description
                     Text(
                       notice['description'] ?? 'No description available', // Assuming 'description' field
@@ -56,7 +56,7 @@ class NoticesPage extends StatelessWidget {
                         color: Colors.grey[600],
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     // Optional Date or Metadata (if available)
                     Text(
                       notice['date'] ?? 'No date available', // Assuming 'date' field

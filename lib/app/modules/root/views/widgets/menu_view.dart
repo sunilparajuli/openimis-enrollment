@@ -72,7 +72,7 @@ class MenuView extends GetView<RootController> {
                 () {
               final isBiometricEnabled = authController.isBiometricEnabled.value;
               return SwitchListTile(
-                title: Text("Enable Biometric Authentication"),
+                title: const Text("Enable Biometric Authentication"),
                 value: isBiometricEnabled,
                 onChanged: (value) {
                   authController.toggleBiometric(value);
@@ -88,7 +88,7 @@ class MenuView extends GetView<RootController> {
           MenuItem(
             icon: HeroIcons.heart,
             title: "Notifications",
-            onTap: () => Get.to(() =>  NotificationSettingsPage()),
+            onTap: () => Get.to(() =>  const NotificationSettingsPage()),
           ),
           const Spacer(),
 
@@ -96,7 +96,7 @@ class MenuView extends GetView<RootController> {
             icon: HeroIcons.arrowLeftOnRectangle,
             title: "Logout",
             onTap: controller.logout,
-            textColor: Get.theme.errorColor,
+            textColor: Get.theme.colorScheme.error,
           ),
           SizedBox(height: 20.h),
         ],
@@ -149,7 +149,7 @@ class _Header extends GetView<RootController> {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
                     padding: EdgeInsets.all(6.w),
                     minimumSize: Size.zero,
                     shape: RoundedRectangleBorder(
@@ -177,7 +177,7 @@ class _Header extends GetView<RootController> {
               style: GoogleFonts.poppins(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w400,
-                color: Get.theme.colorScheme.onPrimary.withOpacity(.75),
+                color: Get.theme.colorScheme.onPrimary.withValues(alpha: .75),
               ),
             ),
           ],
@@ -227,7 +227,7 @@ class MenuItem extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
-                  color: textColor ?? Get.theme.colorScheme.onBackground,
+                  color: textColor ?? Get.theme.colorScheme.onSurface,
                 ),
               ),
               if (subtitle != null)
@@ -237,7 +237,7 @@ class MenuItem extends StatelessWidget {
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
                     color: textColor ??
-                        Get.theme.colorScheme.secondary.withOpacity(.75),
+                        Get.theme.colorScheme.secondary.withValues(alpha: .75),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),

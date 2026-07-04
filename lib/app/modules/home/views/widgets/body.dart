@@ -41,7 +41,7 @@ class Body extends GetView<HomeController> {
               //SizedBox(height: 16.0),
               Text(
                 'openimis'.tr,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                 ),

@@ -23,7 +23,7 @@ class CustomBottomSheet extends StatelessWidget {
             height: 4.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(22.r),
-              color: Get.theme.colorScheme.onBackground,
+              color: Get.theme.colorScheme.onSurface,
             ),
           ),
           body,

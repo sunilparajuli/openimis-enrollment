@@ -17,6 +17,7 @@ class MemberShipCard implements IDto {
         pdfBase64: pdfBase64 ?? this.pdfBase64,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['pdf_base64'] = pdfBase64;

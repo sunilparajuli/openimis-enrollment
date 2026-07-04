@@ -43,6 +43,7 @@ class NationalID implements IDto {
   }
 
   // Method to convert a NationalID object to JSON
+  @override
   Map<String, dynamic> toJson() {
     return {
       'national_id': nationalId,

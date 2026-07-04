@@ -1,13 +1,11 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Ensure you're using GetX for enrollmentController
 import 'package:openimis_app/app/data/remote/api/api_routes.dart';
 import 'package:openimis_app/app/modules/public_enrollment/controller/public_enrollment_controller.dart';
 import 'package:openimis_app/app/modules/public_enrollment/views/widgets/payment_success.dart';
-import 'package:openimis_app/app/modules/public_enrollment/views/widgets/paypal_service.dart';
+
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../../data/remote/api/dio_client.dart';
 
 class PaypalPaymentPage extends StatefulWidget {
   final Function(String)? onFinish;
@@ -23,10 +21,8 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
   String? checkoutUrl;
   String? executeUrl;
   String? accessToken;
-  late WebViewController _webViewController;
 
 
-  final PaypalServices services = PaypalServices();
 
   Map<dynamic, dynamic> defaultCurrency = {
     "symbol": "USD ",
@@ -38,7 +34,7 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
   bool isEnableShipping = false;
   bool isEnableAddress = false;
 
-  String returnURL = "http://localhost:8000"+ApiRoutes.PAYMENT_COMPLETE;
+  String returnURL = "http://localhost:8000${ApiRoutes.PAYMENT_COMPLETE}";
   String cancelURL = 'cancel.example.com';
 
   final enrollmentController = Get.find<PublicEnrollmentController>(); // Use your actual controller class
@@ -49,10 +45,10 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
 
     Future.delayed(Duration.zero, () async {
       try {
-        accessToken = await services.getAccessToken();
+        accessToken = await enrollmentController.getPaypalAccessToken();
 
         final transactions = getOrderParams();
-        final res = await services.createPaypalPayment(transactions, accessToken!);
+        final res = await enrollmentController.createPaypalPayment(transactions, accessToken!);
         if (res != null) {
           setState(() {
             checkoutUrl = res["approvalUrl"];
@@ -129,7 +125,7 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
     if (checkoutUrl != null) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           leading: GestureDetector(
             child: const Icon(Icons.arrow_back_ios),
             onTap: () => Navigator.pop(context),
@@ -138,9 +134,7 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
         body: WebView(
           initialUrl: checkoutUrl,
           javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (controller) {
-            _webViewController = controller;
-          },
+          onWebViewCreated: (controller) {},
           navigationDelegate: (NavigationRequest request) {
             if (request.url.contains(returnURL)) {
               final uri = Uri.parse(request.url);
@@ -216,23 +210,4 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
     }
   }
 
-  void _handleReturnUrl() {
-    // Custom handling when returnUrl is detected
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Payment Successful'),
-        content: const Text('Your payment was processed successfully.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-              Navigator.of(context).pop(); // Go back to the previous screen
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
 }

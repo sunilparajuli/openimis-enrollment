@@ -24,10 +24,10 @@ class LoginView extends GetView<AuthController> {
       }
 
       return Scaffold(
-        backgroundColor: Get.theme.backgroundColor,
+        backgroundColor: Get.theme.colorScheme.surface,
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: Get.theme.backgroundColor,
+          backgroundColor: Get.theme.colorScheme.surface,
           elevation: 0,
           toolbarHeight: kToolbarHeight,
           automaticallyImplyLeading: false,
@@ -44,13 +44,13 @@ class LoginView extends GetView<AuthController> {
             ),
           ],
           systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Get.theme.backgroundColor,
+            statusBarColor: Get.theme.colorScheme.surface,
             statusBarIconBrightness: Brightness.dark,
           ),
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
-            statusBarColor: Get.theme.backgroundColor,
+            statusBarColor: Get.theme.colorScheme.surface,
             statusBarIconBrightness: Brightness.dark,
             systemNavigationBarColor: Colors.white,
             systemNavigationBarIconBrightness: Brightness.dark,

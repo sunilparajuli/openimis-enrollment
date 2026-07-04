@@ -14,9 +14,7 @@ import '../../../data/local/entities/user_entity.dart';
 import '../../../data/remote/base/status.dart';
 import '../../../data/remote/dto/auth/login_in_dto.dart';
 import '../../../data/remote/dto/auth/login_out_dto.dart';
-import '../../../data/remote/dto/auth/register_company_dto.dart';
 import '../../../data/remote/dto/auth/register_company_out_dto.dart';
-import '../../../data/remote/dto/auth/register_customer_dto.dart';
 import '../../../data/remote/dto/auth/register_customer_out_dto.dart';
 import '../../../data/remote/repositories/auth/auth_repository.dart';
 import '../../../di/locator.dart';
@@ -153,13 +151,13 @@ class AuthController extends GetxController {
     storage.write('isFirstTime', value);  // Save to storage
   }
   Future<void> verifyOtp() async {
-    _rxcustomerOtpVerifyState.value = Status.loading();
+    _rxcustomerOtpVerifyState.value = const Status.loading();
     Map<String, dynamic> data = {
       "phone": customerPhoneNumberController.value.text,
       "otp": customerOTPController.value.text,
       "username": customerUsernameController.value.text,
       "password": customerConfirmPasswordController.value.text,
-      "email": customerEmailController.value.text ?? "test-gmail@g.com",
+      "email": customerEmailController.value.text,
     };
 
     final response = await _authRepository.insureeOTPValidation(data);
@@ -181,7 +179,7 @@ class AuthController extends GetxController {
           ),
           isScrollControlled: true,
           backgroundColor: Colors.white, // Set background color
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(20.0), // Add rounded corners to the top
             ),
@@ -191,13 +189,13 @@ class AuthController extends GetxController {
         ),
       );
     } else {
-      _rxcustomerOtpVerifyState.value = Status.failure(reason: "reason");
+      _rxcustomerOtpVerifyState.value = const Status.failure(reason: "reason");
       SnackBars.failure("Oops!", response.message);
     }
   }
 
   Future<void> resendOtpForVerify() async{
-    _rxcustomerOtpVerifyState.value=Status.loading();
+    _rxcustomerOtpVerifyState.value=const Status.loading();
     Map<String, dynamic> data = {
       "phone": customerPhoneNumberController.value.text,
     };
@@ -216,13 +214,13 @@ class AuthController extends GetxController {
   }
 
   void verifyInsuree() async{
-    _rxCustomerRegisterState.value = Status.loading();
+    _rxCustomerRegisterState.value = const Status.loading();
     Map<String, dynamic> data = {
       "chfid": customerChfidController.value.text,
       "head_chfid": customerHeadChfidController.value.text,
       "dob": "2024-03-24",
       "phone": customerPhoneNumberController.value.text,
-      "email": customerEmailController.value.text ?? "test-gmail@g.com",
+      "email": customerEmailController.value.text,
     };
     final response = await _authRepository.insureeValidation(data);
     if (!response.error) {
@@ -232,13 +230,13 @@ class AuthController extends GetxController {
       //Get.offAllNamed(Routes.OTP);
       //popupBottomSheet(bottomSheetBody: const SubmitBottomSheet());
     } else {
-      _rxCustomerRegisterState.value = Status.failure(reason: "reason");
+      _rxCustomerRegisterState.value = const Status.failure(reason: "reason");
       SnackBars.failure("Oops!", response.message);
     }
   }
 
   Future<void> verifyUsername (data) async {
-    _rxUsernameVerify.value = Status.loading();
+    _rxUsernameVerify.value = const Status.loading();
     Map<String, dynamic> data = {
       "username": customerUsernameController.value.text,
     };
@@ -248,7 +246,7 @@ class AuthController extends GetxController {
       _rxUsernameVerify.value = Status.success(data: response.data);
       FocusManager.instance.primaryFocus?.unfocus();
     } else {
-      _rxUsernameVerify.value = Status.failure(reason: "reason");
+      _rxUsernameVerify.value = const Status.failure(reason: "reason");
       usernameExists.value = true;
       SnackBars.failure("Oops!", response.message);
     }
@@ -258,7 +256,7 @@ class AuthController extends GetxController {
     canResend.value = false;
     timeLeft.value = 10;
 
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       if (timeLeft.value > 0) {
         timeLeft.value--;
       } else {
@@ -283,10 +281,6 @@ class AuthController extends GetxController {
 
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
   @override
   void onClose() {
@@ -315,8 +309,8 @@ class AuthController extends GetxController {
     customerEmailController.text = 'kadl.invoker@gmail.com'; // Reset to default
     customerPasswordController.text = 'Apple@12345'; // Reset to default
     customerOTPController.clear(); // Assuming OTP can be cleared
-    _rxcustomerOtpVerifyState.value = Status.idle();
-    _rxCustomerRegisterState.value = Status.idle();
+    _rxcustomerOtpVerifyState.value = const Status.idle();
+    _rxCustomerRegisterState.value = const Status.idle();
      isVerified.value = false;
      canResend.value = false;
 
@@ -391,12 +385,12 @@ class AuthController extends GetxController {
           id: data?.username ?? "",
           email: data!.email!,
           name: "${data.firstName} ${data.lastName}",
-          token: data?.access ?? "",
+          token: data.access ?? "",
           role: data.exp.toString() ,
-          is_insuree: data?.isInsuree ?? false,
-          is_officer: data?.isOfficer ?? false,
-          refresh: data?.refresh ?? "",
-          insureeInfo: data?.insureeInfo, // Add insureeInfo here
+          is_insuree: data.isInsuree ?? false,
+          is_officer: data.isOfficer ?? false,
+          refresh: data.refresh ?? "",
+          insureeInfo: data.insureeInfo, // Add insureeInfo here
         );
         storage.write('loginUsername', loginEmailController.text);
         storage.write('loginPassword',
@@ -426,7 +420,7 @@ class AuthController extends GetxController {
       if (isBiometricAvailable) {
         final isAuthenticated = await auth.authenticate(
           localizedReason: 'Please authenticate to enable biometrics',
-          options: AuthenticationOptions(biometricOnly: true),
+          options: const AuthenticationOptions(biometricOnly: true),
         );
 
         if (isAuthenticated) {
@@ -455,7 +449,7 @@ class AuthController extends GetxController {
       try {
         final isAuthenticated = await auth.authenticate(
           localizedReason: 'Please authenticate to login',
-          options: AuthenticationOptions(biometricOnly: true),
+          options: const AuthenticationOptions(biometricOnly: true),
         );
 
         if (isAuthenticated) {
@@ -495,12 +489,12 @@ class AuthController extends GetxController {
           id: data?.username ?? "",
           email: data!.email!,
           name: "${data.firstName} ${data.lastName}",
-          token: data?.access ?? "",
-          role: data?.userType ?? '',
-          is_insuree: data?.isInsuree ?? false,
-          is_officer: data?.isOfficer ?? false,
-          refresh: data?.refresh ?? "",
-          insureeInfo: data?.insureeInfo, // Add insureeInfo here
+          token: data.access ?? "",
+          role: data.userType ?? '',
+          is_insuree: data.isInsuree ?? false,
+          is_officer: data.isOfficer ?? false,
+          refresh: data.refresh ?? "",
+          insureeInfo: data.insureeInfo, // Add insureeInfo here
         );
         _getCurrentUser();
         Get.offAllNamed(Routes.ROOT);
@@ -540,20 +534,7 @@ class AuthController extends GetxController {
   }
 
 
-  void _saveConfigInStorage(
-      {String? domainName,
-      String? appVersion,
-      String? supportEmail,
-      String? apiBaseUrl}) async {
-    await _authRepository.writeStorage(
-      key: 'appconfig',
-      entity: AppConfigEntity(
-          domainName: domainName,
-          appVersion: appVersion,
-          apiBaseUrl: apiBaseUrl,
-          supportEmail: supportEmail),
-    );
-  }
+
 
   bool validatePasswords() {
     return customerPasswordController.text == customerConfirmPasswordController.text;

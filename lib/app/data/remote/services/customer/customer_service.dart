@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:dio/src/response.dart';
+import 'package:dio/dio.dart';
 import 'package:openimis_app/app/modules/auth/controllers/auth_controller.dart';
 
 import '../../api/api_routes.dart';

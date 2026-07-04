@@ -5,6 +5,8 @@ import '../../controller/enrollment_controller.dart';
 class HealthServiceProviderDropdown extends StatelessWidget {
   final EnrollmentController controller = Get.put(EnrollmentController());
 
+  HealthServiceProviderDropdown({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -22,7 +24,7 @@ class HealthServiceProviderDropdown extends StatelessWidget {
             // Handle the selected value
             print('Selected hospital: $newValue');
           },
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'First Service Point',
             border: OutlineInputBorder(),
           ),

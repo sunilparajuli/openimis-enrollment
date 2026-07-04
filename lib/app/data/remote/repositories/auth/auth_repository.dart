@@ -1,18 +1,14 @@
-import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../../../utils/api_response.dart';
 import '../../../local/base/i_entity.dart';
-import '../../../local/config/app_config.dart';
 import '../../../local/services/storage_service.dart';
 import 'i_auth_repository.dart';
 import '../../base/idto.dart';
 import '../../base/status.dart';
 import '../../dto/auth/login_out_dto.dart';
-import '../../dto/auth/register_company_out_dto.dart';
-import '../../dto/auth/register_customer_out_dto.dart';
 import '../../exceptions/dio_exceptions.dart';
 import '../../services/auth/auth_service.dart';
 
@@ -118,8 +114,6 @@ class AuthRepository implements IAuthRepository<Status<dynamic>> {
     } on DioError catch (e) {
       final errMsg = DioExceptions.fromDioError(e).toString();
       return AsyncResult.failure(errMsg);
-      //showSnackBarOnFailure()
-      return AsyncResult.failure(e.response!.data);
     }
   }
 
@@ -136,8 +130,6 @@ class AuthRepository implements IAuthRepository<Status<dynamic>> {
     } on DioError catch (e) {
       final errMsg = DioExceptions.fromDioError(e).toString();
       return AsyncResult.failure(errMsg);
-      //showSnackBarOnFailure()
-      return AsyncResult.failure(e.response!.data);
     }
   }
 

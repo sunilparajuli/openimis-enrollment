@@ -11,7 +11,7 @@ class CompanyProfileView extends GetView<CompanyProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Get.theme.backgroundColor,
+      backgroundColor: Get.theme.colorScheme.surface,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
             statusBarColor: Get.theme.primaryColor,

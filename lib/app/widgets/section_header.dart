@@ -24,7 +24,7 @@ class SectionHeader extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
-              color: Get.theme.colorScheme.onBackground,
+              color: Get.theme.colorScheme.onSurface,
             ),
           ),
           if (actionTitle != null)

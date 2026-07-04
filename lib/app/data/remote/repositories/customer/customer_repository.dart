@@ -1,18 +1,14 @@
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:openimis_app/app/data/remote/base/idto.dart';
 import 'package:openimis_app/app/modules/Insuree/views/profile.dart';
-import 'package:openimis_app/app/utils/api_response.dart';
 
 
 import '../../base/status.dart';
 import '../../dto/customer/claim_is_dto.dart';
 import '../../dto/customer/claim_out_dto.dart';
 import '../../dto/customer/national_id.dto.dart';
-import '../../dto/customer/toggle_save_out_dto.dart';
 
-import '../../dto/enrollment/enrollment_in_dto.dart';
 import '../../exceptions/dio_exceptions.dart';
 import '../../services/customer/i_customer_service.dart';
 import 'i_customer_repository.dart';

@@ -58,6 +58,7 @@ class CompanyOutDto implements IDto {
         image: image ?? this.image,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;

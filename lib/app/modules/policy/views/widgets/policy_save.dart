@@ -6,15 +6,17 @@ import '../../../search/views/widgets/items_card.dart'; // Ensure this is the co
 class PolicyListPage extends StatelessWidget {
   final PolicyController controller = Get.put(PolicyController());
 
+  PolicyListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final policies = controller.policies;
       return policies.isEmpty
-          ? Center(child: Text('No policies found'))
+          ? const Center(child: Text('No policies found'))
           : ListView.builder(
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: policies.length,
         itemBuilder: (context, index) {
           final policy = policies[index];

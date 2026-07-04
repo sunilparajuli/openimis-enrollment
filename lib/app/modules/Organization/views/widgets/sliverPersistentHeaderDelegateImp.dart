@@ -19,7 +19,7 @@ class SliverPersistentHeaderDelegateImp extends SliverPersistentHeaderDelegate {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: Get.theme.backgroundColor,
+          color: Get.theme.colorScheme.surface,
         ),
         child: Container(
           padding: EdgeInsets.all(5.w),
@@ -28,7 +28,7 @@ class SliverPersistentHeaderDelegateImp extends SliverPersistentHeaderDelegate {
             borderRadius: BorderRadius.circular(14.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.05),
+                color: Colors.grey.withValues(alpha: 0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),

@@ -1,19 +1,19 @@
-import 'dart:async';
+
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class EsewaEpay extends StatefulWidget {
+  const EsewaEpay({super.key});
+
   @override
   _TestPageState createState() => _TestPageState();
 }
 
 class _TestPageState extends State<EsewaEpay> {
-  Completer<WebViewController> _controller = Completer<WebViewController>();
 
   late WebViewController _webViewController;
 
@@ -47,17 +47,17 @@ class _TestPageState extends State<EsewaEpay> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: SizedBox.shrink(),
+        leading: const SizedBox.shrink(),
       ),
       body: WebView(
         initialUrl: "about:blank",
         javascriptMode: JavascriptMode.unrestricted,
-        javascriptChannels: Set.from([
+        javascriptChannels: {
           JavascriptChannel(
             name: "message",
             onMessageReceived: (message) {},
           ),
-        ]),
+        },
         onPageFinished: (data) {
           setState(() {
             String pid = UniqueKey().toString();

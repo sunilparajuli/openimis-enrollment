@@ -32,7 +32,7 @@ class RootView extends GetView<RootController> {
             idle: () => Container(),
             success: (data) => AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
-                statusBarColor: Get.theme.backgroundColor,
+                statusBarColor: Get.theme.colorScheme.surface,
                 statusBarIconBrightness: Brightness.dark,
                 systemNavigationBarColor: Colors.white,
                 systemNavigationBarIconBrightness: Brightness.dark,
@@ -47,7 +47,7 @@ class RootView extends GetView<RootController> {
                 decoration: NavBarDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Get.theme.colorScheme.secondary.withOpacity(.15),
+                      color: Get.theme.colorScheme.secondary.withValues(alpha: .15),
                       spreadRadius: 0,
                       blurRadius: 159,
                       offset: const Offset(0, 4), // changes position of shadow
@@ -71,7 +71,7 @@ class RootView extends GetView<RootController> {
             failure: (String? reason) => Center(
               child: Text('Failed: $reason'),
             ),
-            loading: () => Center(
+            loading: () => const Center(
               child: InsureeShimmer(),
             ),
           );
@@ -93,9 +93,9 @@ class RootView extends GetView<RootController> {
 
   List<Widget> _getInsureeNavBarScreens() {
     return [
-      HomeView(),
-      SearchView(),
-      ClaimView()
+      const HomeView(),
+      const SearchView(),
+      const ClaimView()
       //PolicyView(),
       //SearchView(),
     ];
@@ -104,10 +104,10 @@ class RootView extends GetView<RootController> {
 
   List<Widget> _getOfficerNavBarScreens() {
     return [
-      HomeView(),
-      EnrollmentView(),
-      PolicyView(),
-      SearchView(),
+      const HomeView(),
+      const EnrollmentView(),
+      const PolicyView(),
+      const SearchView(),
     ];
   }
 
@@ -145,8 +145,8 @@ class RootView extends GetView<RootController> {
   List<PersistentBottomNavBarItem> _getOfficerNavBarItems() {
     return [
       _getNavBarItem(
-        "Search",
-        HeroIcons.magnifyingGlass,
+        "Home",
+        HeroIcons.home,
             () => controller.onSearchDoubleClick(),
       ),
       _getNavBarItem(
@@ -170,10 +170,10 @@ class RootView extends GetView<RootController> {
   // Optional default nav bar in case of no valid user type
   List<Widget> _getDefaultNavBarScreens() {
     return [
-      HomeView(),
-      SearchView(),
-      PolicyView(),
-      SearchView(),
+      const HomeView(),
+      const SearchView(),
+      const PolicyView(),
+      const SearchView(),
     ];
   }
 
