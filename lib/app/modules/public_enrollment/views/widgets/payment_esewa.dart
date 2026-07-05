@@ -15,15 +15,13 @@ class EsewaEpay extends StatefulWidget {
 
 class _TestPageState extends State<EsewaEpay> {
 
-  late WebViewController _webViewController;
+  late final WebViewController _webViewController;
 
   String testUrl = "https://uat.esewa.com.np/epay/main";
 
   _loadHTMLfromAsset() async {
     String file = await rootBundle.loadString("assets/esewa_v2.html");
-    _webViewController.loadUrl(Uri.dataFromString(file,
-        mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString());
+    _webViewController.loadHtmlString(file);
   }
 
   // ePay deatils
@@ -39,8 +37,22 @@ class _TestPageState extends State<EsewaEpay> {
   @override
   void initState() {
     super.initState();
-    // Enable hybrid composition.
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel(
+        "message",
+        onMessageReceived: (message) {},
+      )
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) {
+            String pid = UniqueKey().toString();
+            _webViewController.runJavaScript(
+                'requestPayment(tAmt = $tAmt, amt = $amt, txAmt = $txAmt, psc = $psc, pdc = $pdc, scd = "$scd", pid = "$pid", su = "$su", fu = "$fu")');
+          },
+        ),
+      );
+    _loadHTMLfromAsset();
   }
 
   @override
@@ -49,27 +61,8 @@ class _TestPageState extends State<EsewaEpay> {
       appBar: AppBar(
         leading: const SizedBox.shrink(),
       ),
-      body: WebView(
-        initialUrl: "about:blank",
-        javascriptMode: JavascriptMode.unrestricted,
-        javascriptChannels: {
-          JavascriptChannel(
-            name: "message",
-            onMessageReceived: (message) {},
-          ),
-        },
-        onPageFinished: (data) {
-          setState(() {
-            String pid = UniqueKey().toString();
-            _webViewController.evaluateJavascript(
-                'requestPayment(tAmt = $tAmt, amt = $amt, txAmt = $txAmt, psc = $psc, pdc = $pdc, scd = "$scd", pid = "$pid", su = "$su", fu = "$fu")');
-          });
-        },
-        onWebViewCreated: (webViewController) {
-          // _controller.complete(webViewController);
-          _webViewController = webViewController;
-          _loadHTMLfromAsset();
-        },
+      body: WebViewWidget(
+        controller: _webViewController,
       ),
     );
   }

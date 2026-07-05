@@ -21,8 +21,7 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
   String? checkoutUrl;
   String? executeUrl;
   String? accessToken;
-
-
+  late final WebViewController _controller;
 
   Map<dynamic, dynamic> defaultCurrency = {
     "symbol": "USD ",
@@ -42,6 +41,67 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
   @override
   void initState() {
     super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.contains(returnURL)) {
+              final uri = Uri.parse(request.url);
+              final payerID = uri.queryParameters['PayerID'];
+
+              if (payerID != null) {
+                if (executeUrl != null && accessToken != null) {
+                  // Call postEnrollmentAfterPayment
+                  enrollmentController
+                      .postEnrollmentAfterPayment(executeUrl!, payerID, accessToken!)
+                      .then((_) {
+                    if (widget.onFinish != null) {
+                      widget.onFinish!("Enrollment successful!");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                           PaymentSuccessScreen(paymentId: "Enrollment Successful"),
+                        ),
+                      );
+                    }
+                  }).catchError((error) {
+                    // Handle errors from postEnrollmentAfterPayment
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Payment and enrollment failed: $error")),
+                    );
+                    Navigator.of(context).pop();
+                  });
+                } else {
+                  // Handle case where executeUrl or accessToken is null
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Payment execution data is missing.")),
+                  );
+                  Navigator.of(context).pop();
+                }
+              } else {
+                // Handle case where payerID is null
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Payment canceled.")),
+                );
+                Navigator.of(context).pop();
+              }
+              return NavigationDecision.prevent;
+            }
+
+            if (request.url.contains(cancelURL)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Payment canceled.")),
+              );
+              Navigator.of(context).pop();
+              return NavigationDecision.prevent;
+            }
+
+            return NavigationDecision.navigate;
+          },
+        ),
+      );
 
     Future.delayed(Duration.zero, () async {
       try {
@@ -53,6 +113,7 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
           setState(() {
             checkoutUrl = res["approvalUrl"];
             executeUrl = res["executeUrl"];
+            _controller.loadRequest(Uri.parse(checkoutUrl!));
           });
         }
       } catch (ex) {
@@ -131,66 +192,9 @@ class _PaypalPaymentPageState extends State<PaypalPaymentPage> {
             onTap: () => Navigator.pop(context),
           ),
         ),
-        body: WebView(
-          initialUrl: checkoutUrl,
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (controller) {},
-          navigationDelegate: (NavigationRequest request) {
-            if (request.url.contains(returnURL)) {
-              final uri = Uri.parse(request.url);
-              final payerID = uri.queryParameters['PayerID'];
-
-              if (payerID != null) {
-                if (executeUrl != null && accessToken != null) {
-                  // Call postEnrollmentAfterPayment
-                  enrollmentController
-                      .postEnrollmentAfterPayment(executeUrl!, payerID, accessToken!)
-                      .then((_) {
-                    if (widget.onFinish != null) {
-                      widget.onFinish!("Enrollment successful!");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                           PaymentSuccessScreen(paymentId: "Enrollment Successful"),
-                        ),
-                      );
-                    }
-                  }).catchError((error) {
-                    // Handle errors from postEnrollmentAfterPayment
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Payment and enrollment failed: $error")),
-                    );
-                    Navigator.of(context).pop();
-                  });
-                } else {
-                  // Handle case where executeUrl or accessToken is null
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Payment execution data is missing.")),
-                  );
-                  Navigator.of(context).pop();
-                }
-              } else {
-                // Handle case where payerID is null
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Payment canceled.")),
-                );
-                Navigator.of(context).pop();
-              }
-            }
-
-            if (request.url.contains(cancelURL)) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Payment canceled.")),
-              );
-              Navigator.of(context).pop();
-            }
-
-            return NavigationDecision.navigate;
-          },
-
+        body: WebViewWidget(
+          controller: _controller,
         ),
-
       );
     } else {
       return Scaffold(
