@@ -25,22 +25,19 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
-}
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
-  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
     print("Handling a background message: ${message.messageId}");
   }
   // Firebase initialization
   if (Platform.isAndroid) {
     await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
   await CountryCodes.init();
@@ -48,7 +45,7 @@ void main() async {
   await GetStorage.init();
   final languageService = Get.put(LanguageService());
   final themeService = Get.put(ThemeService());
-  final authController = Get.put(AuthController());
+  Get.put(AuthController());
   // Local Notifications Setup
   const AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -87,7 +84,7 @@ void main() async {
 
 
   final rootController = Get.put(RootController());
-  await Future.delayed(Duration(milliseconds: 100));
+  await Future.delayed(const Duration(milliseconds: 100));
   await rootController.fetchConfigurations(); // Fetch configurations here
   await rootController.fetchSupportedPartners();
 
@@ -132,7 +129,7 @@ void main() async {
                 ? AppTheme.darkTheme
                 : AppTheme.lightTheme,
             defaultTransition: Transition.cupertino,
-            localizationsDelegates: [
+            localizationsDelegates: const [
             ],
           ),
     ),

@@ -14,7 +14,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Get.theme.backgroundColor,
+        backgroundColor: Get.theme.colorScheme.surface,
         appBar: CustomAppBar(
           leading: Padding(
             padding: EdgeInsets.only(left: 16.w, bottom: 8.w, top: 8.w),

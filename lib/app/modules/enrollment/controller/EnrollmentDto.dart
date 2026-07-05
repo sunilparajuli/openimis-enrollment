@@ -124,6 +124,7 @@ class EnrollmentDto implements IDto {
         family: family ?? this.family,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['chfid'] = chfid;

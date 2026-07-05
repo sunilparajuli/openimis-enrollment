@@ -20,7 +20,7 @@ class CompanyTabBar extends GetView<CompanyProfileController> {
         fontSize: 14.sp,
         fontWeight: FontWeight.w700,
       ),
-      labelColor: Get.theme.colorScheme.onBackground,
+      labelColor: Get.theme.colorScheme.onSurface,
       unselectedLabelColor: Get.theme.colorScheme.tertiary,
       tabs: const [
         Tab(text: "About us"),

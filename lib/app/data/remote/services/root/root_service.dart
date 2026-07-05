@@ -1,6 +1,5 @@
 import 'package:dio/src/response.dart';
 
-import '../../../local/config/app_config.dart';
 import '../../api/api_routes.dart';
 import '../../api/dio_client.dart';
 import 'i_root_service.dart';

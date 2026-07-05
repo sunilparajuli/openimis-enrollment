@@ -9,14 +9,12 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:openimis_app/app/data/remote/repositories/enrollment/enrollment_repository.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/LocationDto.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/MembershipDto.dart';
-import 'package:openimis_app/app/modules/policy/views/widgets/qr_view.dart';
 
 import '../../../data/remote/base/status.dart';
 import '../../../di/locator.dart';
 import '../../../utils/database_helper.dart';
 import '../../../utils/functions.dart';
 import '../../../widgets/snackbars.dart';
-import '../views/widgets/enrollment_form.dart';
 import '../views/widgets/enrollment_members.dart';
 import '../views/widgets/qr_view.dart';
 import '../views/widgets/submit_botton_sheet.dart';
@@ -24,7 +22,7 @@ import 'DropdownDto.dart';
 import 'EnrollmentDto.dart';
 import 'HospitalDto.dart';
 
-class EnrollmentController extends GetxController with SingleGetTickerProviderMixin {
+class EnrollmentController extends GetxController with GetSingleTickerProviderStateMixin {
   final GlobalKey<FormState> enrollmentFormKey = GlobalKey<FormState>();
   final GetStorage _storage = GetStorage(); // Use GetStorage for local storage
 
@@ -165,7 +163,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
     }
     ever(newEnrollment, handleNewEnrollmentChange);
     debounce(searchText, (_) => filterEnrollments(),
-        time: Duration(milliseconds: 300));
+        time: const Duration(milliseconds: 300));
   }
 
 
@@ -209,7 +207,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
   }
 
   Future<void> getAllHospitals() async {
-    _rxHospitalState.value = Status.loading();
+    _rxHospitalState.value = const Status.loading();
     final Status<List<HealthServiceProvider>> state = await _enrollmentRepository.getHospitals();
     state.whenOrNull(
         success: (data) {
@@ -219,7 +217,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
   }
 
   Future<void> getMembershipCard(String uuid) async {
-    _rxMemberShipCard.value = Status.loading();
+    _rxMemberShipCard.value = const Status.loading();
     final Status<MemberShipCard> state = await _enrollmentRepository.getMembershipCard(uuid: uuid);
     state.whenOrNull(
         success: (data) {
@@ -285,7 +283,6 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
   }
 
   Future<void> updateEnrollment(enrollment) async {
-    final dbHelper = DatabaseHelper();
     return;
     // final existingEnrollment = await dbHelper. .queryEnrollmentByChfid(
     //     chfidController.text);
@@ -379,9 +376,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
       'healthFacility': enrollmentData['healthFacility'] ?? '',
       'relationShip': enrollmentData['relationShip'] ?? ''
     };
-    Map<String, dynamic> voucherData = {
-      'voucherNumber' : voucherNumber.value
-    };
+
     // Convert family data to JSON string
     String familyJsonContent = jsonEncode(familyData);
     String memberJsonContent = jsonEncode(memberData);
@@ -390,7 +385,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
 
     // Insert family into the 'family' table
 
-    if (newEnrollment.value)
+    if (newEnrollment.value) {
       // Insert family into the 'family' table and get the family ID
       familyId.value = await db.insert('family', {
         'chfid': enrollmentData['chfid'],
@@ -398,9 +393,10 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
         'photo': enrollmentData['photo'],
         'sync': 0, // Assuming false for initial save
       });
+    }
 
       // Now insert the member into the 'members' table, using the familyId
-      final members = await db.insert('members', {
+      await db.insert('members', {
         'chfid': enrollmentData['chfid'], // Unique CHFID for the member
         'name': '${enrollmentData['givenName']} ${enrollmentData['lastName']}',
         'head': enrollmentData['isHead'] ?? 0,
@@ -509,7 +505,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
     isLoading.value = true;
     try {
       // Set loading status
-      _rxEnrollmentState.value = Status.loading();
+      _rxEnrollmentState.value = const Status.loading();
 
       // Step 1: Fetch family and members data using enrollmentId
       await fetchEnrollmentDetails(enrollmentId);
@@ -558,7 +554,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
       SnackBars.failure("Error", "An error occurred: $error");
     } finally {
       // Set the state back to idle
-      _rxEnrollmentState.value = Status.idle();
+      _rxEnrollmentState.value = const Status.idle();
     }
   }
 
@@ -671,7 +667,7 @@ class EnrollmentController extends GetxController with SingleGetTickerProviderMi
   void showSnackBarOnFailure(String? err) {
     Get.closeAllSnackbars();
     SnackBars.failure("Oops!", err.toString());
-    _rxEnrollmentState.value = Status.idle();
+    _rxEnrollmentState.value = const Status.idle();
   }
 
 

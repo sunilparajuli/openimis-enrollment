@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:openimis_app/app/modules/Insuree/controllers/customer_profile_controller.dart';
 import 'package:openimis_app/app/modules/Insuree/views/claim_body.dart';
 
-import '../../../widgets/custom_appbar.dart';
-import '../../../widgets/custom_bottom_sheet.dart';
 
 
 class ClaimView extends GetView<CustomerProfileController> {
@@ -18,17 +15,17 @@ class ClaimView extends GetView<CustomerProfileController> {
     final CustomerProfileController controller = Get.put(CustomerProfileController());
     controller.loadPage(isProfilePage: false);
     return Scaffold(
-      backgroundColor: Get.theme.colorScheme.background,
+      backgroundColor: Get.theme.colorScheme.surface,
       resizeToAvoidBottomInset: false,
 
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: Get.theme.colorScheme.background,
+          statusBarColor: Get.theme.colorScheme.surface,
           statusBarIconBrightness: Brightness.dark,
           systemNavigationBarColor: Colors.white,
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
-        child:  SafeArea(child: ClaimBody()),
+        child:  const SafeArea(child: ClaimBody()),
       ),
     );
   }

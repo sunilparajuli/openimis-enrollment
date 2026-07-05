@@ -7,7 +7,6 @@ import 'package:openimis_app/app/data/remote/repositories/root/root_repository.d
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 
 import '../../../data/remote/base/status.dart';
 import '../../../di/locator.dart';
@@ -87,10 +86,6 @@ class RootController extends GetxController {
     }
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
   @override
   void onClose() {
@@ -141,7 +136,7 @@ class RootController extends GetxController {
   }
 
   Future<void> fetchConfigurations() async { // Change return type to Future<void>
-    configurationStatus.value = Status.loading();
+    configurationStatus.value = const Status.loading();
     try {
       final configStatus = await _rootRepository.fetchConfig();
       configStatus.whenOrNull(
@@ -160,11 +155,11 @@ class RootController extends GetxController {
           }
         },
         failure: (error) {
-          configurationStatus.value = Status.success();
+          configurationStatus.value = const Status.success();
         },
       );
     } catch (e) {
-      configurationStatus.value = Status.success();
+      configurationStatus.value = const Status.success();
     }
   }
 

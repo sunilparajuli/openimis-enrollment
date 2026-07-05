@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../modules/auth/controllers/auth_controller.dart';
-import '../../widgets/custom_bottom_sheet.dart';
 import '../language_service.dart';
 import '../languages.dart';
 
@@ -26,7 +25,7 @@ void showLanguageSelectionBottomSheet(BuildContext context) {
             height: 4.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(22.r),
-              color: Get.theme.colorScheme.onBackground,
+              color: Get.theme.colorScheme.onSurface,
             ),
           ),
           // ListView to display language options
@@ -52,13 +51,13 @@ void showLanguageSelectionBottomSheet(BuildContext context) {
                     margin: EdgeInsets.only(bottom: 12.h),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.r),
-                      color: Get.theme.colorScheme.secondary.withOpacity(0.1),
+                      color: Get.theme.colorScheme.secondary.withValues(alpha: 0.1),
                     ),
                     child: Text(
                       languageName,
                       style: TextStyle(
                         fontSize: 16.sp,
-                        color: Get.theme.colorScheme.onBackground,
+                        color: Get.theme.colorScheme.onSurface,
                       ),
                     ),
                   ),

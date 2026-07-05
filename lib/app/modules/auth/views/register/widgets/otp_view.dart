@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
@@ -16,7 +14,7 @@ import '../../../controllers/auth_controller.dart';
 class OtpScreen extends StatelessWidget {
   final AuthController authController = Get.put(AuthController());
 
-  OtpScreen() {
+  OtpScreen({super.key}) {
     authController.startTimer();
   }
 
@@ -27,18 +25,18 @@ class OtpScreen extends StatelessWidget {
         title: 'verify_otp'.tr,
         actions: [
           IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Get.back(); // Go back to the previous screen
             },
           ),
         ],
       ),
-      backgroundColor: Get.theme.backgroundColor,
+      backgroundColor: Get.theme.colorScheme.surface,
       resizeToAvoidBottomInset: true,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: Get.theme.backgroundColor,
+          statusBarColor: Get.theme.colorScheme.surface,
           statusBarIconBrightness: Brightness.dark,
           systemNavigationBarColor: Colors.white,
           systemNavigationBarIconBrightness: Brightness.dark,
@@ -57,7 +55,7 @@ class OtpScreen extends StatelessWidget {
                   length: 6,
                   width: MediaQuery.of(context).size.width,
                   fieldWidth: 40,
-                  style: TextStyle(fontSize: 17),
+                  style: const TextStyle(fontSize: 17),
                   textFieldAlignment: MainAxisAlignment.spaceAround,
                   fieldStyle: FieldStyle.box,
                   onCompleted: (otp) async{
@@ -68,22 +66,22 @@ class OtpScreen extends StatelessWidget {
                     authController.verifyOtp();
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Obx(() {
                   return authController.otpVerifyState.when(
                     idle: () => Container(),
-                    loading: () => ElevatedButton(
+                    loading: () => const ElevatedButton(
                       onPressed: null, // Disable button while loading
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white), // Set color for indicator
                       ),
                     ),
-                    failure: (reason) => Text(""),
+                    failure: (reason) => const Text(""),
                     success: (data) {
-                      Timer(Duration(seconds: 1), () {
+                      Timer(const Duration(seconds: 1), () {
                         Get.toNamed(Routes.LOGIN); // Navigate to the OTP route after the delay
                       });
-                      return Column(
+                      return const Column(
                         children: [
                           Icon(Icons.check_circle, color: Colors.green, size: 100),
                           SizedBox(height: 20),
@@ -95,13 +93,13 @@ class OtpScreen extends StatelessWidget {
                   );
                 }),
 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Obx(() {
                   return authController.canResend.value
                       ?
                   TextButton(
                     onPressed: authController.resendOtp,
-                    child: Text('Resend OTP'),
+                    child: const Text('Resend OTP'),
                   )
                       : Text('Resend OTP in ${authController.timeLeft.value}s');
                 }),

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:openimis_app/app/modules/auth/views/register/widgets/body_verify.dart';
 
-import 'widgets/body.dart';
 
 class RegisterVerifyView extends GetView {
   const RegisterVerifyView({Key? key}) : super(key: key);
@@ -12,11 +11,11 @@ class RegisterVerifyView extends GetView {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Get.theme.backgroundColor,
+      backgroundColor: Get.theme.colorScheme.surface,
       resizeToAvoidBottomInset: true,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: Get.theme.backgroundColor,
+          statusBarColor: Get.theme.colorScheme.surface,
           statusBarIconBrightness: Brightness.dark,
           systemNavigationBarColor: Colors.white,
           systemNavigationBarIconBrightness: Brightness.dark,

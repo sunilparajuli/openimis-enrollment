@@ -9,12 +9,14 @@ import 'package:openimis_app/app/modules/public_enrollment/controller/public_enr
 class PublicEnrollmentListPage extends StatelessWidget {
   final PublicEnrollmentController controller = Get.put(PublicEnrollmentController());
 
+  PublicEnrollmentListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Row(
             children: [
               // Other widgets if needed
@@ -25,7 +27,7 @@ class PublicEnrollmentListPage extends StatelessWidget {
           child: Obx(() {
             final enrollments = controller.enrollments;
             return enrollments.isEmpty
-                ? Center(child: Text('No enrollments found'))
+                ? const Center(child: Text('No enrollments found'))
                 : ListView.builder(
               itemCount: enrollments.length,
               itemBuilder: (context, index) {
@@ -34,7 +36,7 @@ class PublicEnrollmentListPage extends StatelessWidget {
                 final imageProvider = (photoBase64 != null &&
                     photoBase64.isNotEmpty)
                     ? Image.memory(base64Decode(photoBase64)).image
-                    : AssetImage(
+                    : const AssetImage(
                     'assets/openimis-logo.png'); // Replace with actual avatar path or URL
 
                 return Dismissible(
@@ -43,27 +45,27 @@ class PublicEnrollmentListPage extends StatelessWidget {
                   background: Container(
                     color: Colors.red,
                     alignment: Alignment.centerRight,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Icon(Icons.delete, color: Colors.white),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   confirmDismiss: (direction) async {
                     return await showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text('Confirm Deletion'),
-                          content: Text(
+                          title: const Text('Confirm Deletion'),
+                          content: const Text(
                               'Do you want to delete this enrollment?'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context)
                                   .pop(false), // User cancels
-                              child: Text('Cancel'),
+                              child: const Text('Cancel'),
                             ),
                             TextButton(
                               onPressed: () => Navigator.of(context)
                                   .pop(true), // User confirms
-                              child: Text('Delete'),
+                              child: const Text('Delete'),
                             ),
                           ],
                         );
@@ -71,7 +73,7 @@ class PublicEnrollmentListPage extends StatelessWidget {
                     );
                   },
                   onDismissed: (direction) {
-                    final enrollmentId = enrollment['family']['id'];
+
 
                     // Call the delete method to handle backend removal or state change
                     //controller.deleteEnrollment(enrollmentId);
@@ -81,12 +83,12 @@ class PublicEnrollmentListPage extends StatelessWidget {
 
                     // Optionally, show a Snackbar to confirm deletion
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Enrollment deleted')),
+                      const SnackBar(content: Text('Enrollment deleted')),
                     );
                   },
                   child: Card(
                     elevation: 4,
-                    margin: EdgeInsets.all(10.0),
+                    margin: const EdgeInsets.all(10.0),
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundImage: imageProvider,
@@ -99,9 +101,9 @@ class PublicEnrollmentListPage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.add_box_outlined),
+                            icon: const Icon(Icons.add_box_outlined),
                             onPressed: () {
-                              var k = enrollment['family']['id'];
+
                               controller.familyId.value =
                               enrollment['family']['id'];
                               controller.confirmAddMember(
@@ -129,12 +131,12 @@ class PublicEnrollmentListPage extends StatelessWidget {
               color: Colors.blue.shade50,
               borderRadius: BorderRadius.circular(8),
             ),
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline, color: Colors.blue),
-                SizedBox(width: 8),
+                const Icon(Icons.info_outline, color: Colors.blue),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'To register a new family member, click the "+" icon next to the family ID in the list. Fill out the required details to complete the member addition.',
@@ -154,7 +156,7 @@ class EditEnrollmentDialog extends StatelessWidget {
   final EnrollmentController controller;
   final enrollment;
 
-  EditEnrollmentDialog({required this.controller, this.enrollment});
+  const EditEnrollmentDialog({super.key, required this.controller, this.enrollment});
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +177,7 @@ class EditEnrollmentDialog extends StatelessWidget {
               children: [
                 Text(
                   'Edit Enrollment',
-                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -258,7 +260,7 @@ class EditEnrollmentDialog extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () => Get.back(),
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                     SizedBox(width: 10.w), // Gap between buttons
                     TextButton(
@@ -266,7 +268,7 @@ class EditEnrollmentDialog extends StatelessWidget {
                         await controller.updateEnrollment(enrollment);
                         Get.back();
                       },
-                      child: Text('Save'),
+                      child: const Text('Save'),
                     ),
                   ],
                 ),
@@ -288,7 +290,7 @@ class EditEnrollmentDialog extends StatelessWidget {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       ),
     );
@@ -306,7 +308,7 @@ class EditEnrollmentDialog extends StatelessWidget {
           : null, // Ensure the value exists in items
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       ),
       items: items.map((item) {

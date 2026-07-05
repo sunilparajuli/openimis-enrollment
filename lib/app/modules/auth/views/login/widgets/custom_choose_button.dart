@@ -42,7 +42,7 @@ class CustomChooseButton extends StatelessWidget {
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50.r),
-                color: Get.theme.colorScheme.primary.withOpacity(0.1),
+                color: Get.theme.colorScheme.primary.withValues(alpha: 0.1),
               ),
               child: Center(
                 child: HeroIcon(

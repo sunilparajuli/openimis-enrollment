@@ -9,7 +9,7 @@ class CarouselExample extends StatelessWidget {
     'https://openimis.org/sites/default/files/styles/news/public/2022-09/Cameroon-Health%20Insurance.png?itok=w_enq7EH',
   ];
 
-  final CarouselController _controller = CarouselController();
+  final CarouselSliderController _controller = CarouselSliderController();
 
   CarouselExample({Key? key}) : super(key: key);
 
@@ -29,7 +29,7 @@ class CarouselExample extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.0), // Rounded corners
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 10.0,
                 offset: const Offset(0, 5),
               ),

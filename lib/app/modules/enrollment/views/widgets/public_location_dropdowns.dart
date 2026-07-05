@@ -3,12 +3,11 @@ import 'package:get/get.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/LocationDto.dart';
 import 'package:openimis_app/app/modules/public_enrollment/controller/public_enrollment_controller.dart';
 import '../../../../data/remote/base/status.dart';
-import '../../controller/enrollment_controller.dart';
 
 class BuildDropdowns extends StatelessWidget {
   final PublicEnrollmentController controller;
 
-  BuildDropdowns({required this.controller});
+  const BuildDropdowns({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +63,8 @@ class BuildDropdowns extends StatelessWidget {
         children: [
           DropdownButtonFormField<LocationDto>(
             value: selectedRegion,
-            hint: Text('Select Region'),
-            decoration: InputDecoration(
+            hint: const Text('Select Region'),
+            decoration: const InputDecoration(
               labelText: "Select Region",
               border: OutlineInputBorder(),
             ),
@@ -77,11 +76,11 @@ class BuildDropdowns extends StatelessWidget {
               );
             }).toList(),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           DropdownButtonFormField<District>(
             value: selectedDistrict,
-            hint: Text('Select District'),
-            decoration: InputDecoration(
+            hint: const Text('Select District'),
+            decoration: const InputDecoration(
               labelText: "Select District",
               border: OutlineInputBorder(),
             ),
@@ -93,11 +92,11 @@ class BuildDropdowns extends StatelessWidget {
               );
             }).toList(),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           DropdownButtonFormField<Municipality>(
             value: selectedMunicipality,
-            hint: Text('Select Municipality'),
-            decoration: InputDecoration(
+            hint: const Text('Select Municipality'),
+            decoration: const InputDecoration(
               labelText: "Select Municipality",
               border: OutlineInputBorder(),
             ),
@@ -109,11 +108,11 @@ class BuildDropdowns extends StatelessWidget {
               );
             }).toList(),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           DropdownButtonFormField<Village>(
             value: controller.selectedVillage.value,
-            hint: Text('Select Village'),
-            decoration: InputDecoration(
+            hint: const Text('Select Village'),
+            decoration: const InputDecoration(
               labelText: "Select Village",
               border: OutlineInputBorder(),
             ),

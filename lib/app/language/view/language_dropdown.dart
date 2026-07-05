@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../language_service.dart';
@@ -7,7 +6,7 @@ import '../languages.dart';
 class LanguageDropdown extends StatelessWidget {
   final LanguageService languageService;
 
-  LanguageDropdown({required this.languageService});
+  const LanguageDropdown({super.key, required this.languageService});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class LanguageDropdown extends StatelessWidget {
           }
         },
         isExpanded: true,
-        hint: Text('Select Language'),
+        hint: const Text('Select Language'),
       ),
     );
   }

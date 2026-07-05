@@ -36,6 +36,8 @@ class EnrollmentRepository implements IEnrollmentRepository<EnrollmentInDto> {
 
   @override
   Future<bool?> delete({required String uuid}) async {
+    return null;
+  
 
   }
 

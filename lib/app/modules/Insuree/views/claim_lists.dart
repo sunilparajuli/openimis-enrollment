@@ -1,10 +1,7 @@
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:openimis_app/app/modules/Insuree/controllers/customer_profile_controller.dart';
-import 'package:openimis_app/app/modules/search/views/widgets/pdfview.dart';
 import 'package:openimis_app/app/widgets/shimmer/claim_shimmer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -30,14 +27,14 @@ class ClaimResults extends GetView<CustomerProfileController> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Report Grievance"),
-            content: Text("Grievance has been reported successfully."),
+            title: const Text("Report Grievance"),
+            content: const Text("Grievance has been reported successfully."),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(); // Close the dialog
                 },
-                child: Text("OK"),
+                child: const Text("OK"),
               ),
             ],
           );
@@ -55,7 +52,7 @@ class ClaimResults extends GetView<CustomerProfileController> {
             ],
           ),
         ),
-        loading: () => Center(child: ClaimResultsShimmer()), // Loading state
+        loading: () => const Center(child: ClaimResultsShimmer()), // Loading state
         success: (results) => results!.isEmpty
             ? CustomLottie(
                 title: AppStrings.NO_RESULT,
@@ -74,54 +71,6 @@ class ClaimResults extends GetView<CustomerProfileController> {
                     padding: 10.0,
                     icon: HeroIcons.bars3,
                     title: results[index].code,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            HeroIcon(
-                              HeroIcons.calendar, // Use the dollar sign icon
-                              size: 20.0,               // Adjust size as needed
-                              color: Colors.green,      // Optional: Set icon color
-                            ),
-                            SizedBox(width: 8),          // Add spacing between icon and text
-                            Text(
-                              results[index].dateClaimed.toString().substring(0, 10), // Claimed amount
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 15.0,),
-                        Row(
-                          children: [
-                            HeroIcon(
-                              HeroIcons.currencyDollar, // Use the dollar sign icon
-                              size: 20.0,               // Adjust size as needed
-                              color: Colors.green,      // Optional: Set icon color
-                            ),
-                            SizedBox(width: 8),          // Add spacing between icon and text
-                            Text(
-                              "${results[index].claimed}", // Claimed amount
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(width: 8),          // Add spacing between text elements
-                            Text(
-                              "Stage: ${results[index].status}", // Claim status
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
                     action: HeroIcons.adjustmentsHorizontal,
                     onActionTap: () {
                       controller.getClaimServItemsResults(results[index].id);
@@ -142,27 +91,27 @@ class ClaimResults extends GetView<CustomerProfileController> {
                               return Obx(() {
                                 return controller.claimServItemResults.when(
                                   idle: () => Container(),
-                                  loading: () => Center(
+                                  loading: () => const Center(
                                       child: CircularProgressIndicator()),
                                   success: (data) {
                                     // Check if data is not null and has claimed items or services
                                     if (data!.claimedItems.isEmpty &&
                                         data.claimedServices.isEmpty) {
-                                      return Center(
+                                      return const Center(
                                           child: Text("No data available"));
                                     }
 
                                     return SingleChildScrollView(
                                       controller:
                                           scrollController, // Use scrollController to sync with draggable sheet
-                                      padding: EdgeInsets.all(10.0),
+                                      padding: const EdgeInsets.all(10.0),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Center(
                                             child: Container(
-                                              margin: EdgeInsets.symmetric(vertical: 10.0),
+                                              margin: const EdgeInsets.symmetric(vertical: 10.0),
                                               width: 80.0,
                                               height: 5.0,
                                               decoration: BoxDecoration(
@@ -173,21 +122,21 @@ class ClaimResults extends GetView<CustomerProfileController> {
                                           ),
                                           // Title for Items
                                           if (data.claimedItems.isNotEmpty) ...[
-                                            Text(
+                                            const Text(
                                               'Items', // Title for Items section
                                               style: TextStyle(
                                                 fontSize: 18.0,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                                 height:
                                                     10.0), // Space between title and list
                                             ListView.builder(
                                               shrinkWrap:
                                                   true, // Allows ListView to take only the needed space
                                               physics:
-                                                  NeverScrollableScrollPhysics(), // Disable internal scrolling
+                                                  const NeverScrollableScrollPhysics(), // Disable internal scrolling
                                               itemCount: data.claimedItems
                                                   .length, // Use dynamic length of claimedItems
                                               itemBuilder: (context, index) {
@@ -196,9 +145,9 @@ class ClaimResults extends GetView<CustomerProfileController> {
                                                 return ListTile(
                                                   leading: GestureDetector(
                                                     onTap: () {
-                                                      Dialog(); // Define what happens when tapped
+                                                      const Dialog(); // Define what happens when tapped
                                                     },
-                                                    child: CircleAvatar(
+                                                    child: const CircleAvatar(
                                                       child: Icon(
                                                           Icons.report_sharp,
                                                           color: Colors.red),
@@ -214,26 +163,26 @@ class ClaimResults extends GetView<CustomerProfileController> {
                                           ],
 
                                           // Space between Items and Services section
-                                          SizedBox(height: 10.0),
+                                          const SizedBox(height: 10.0),
 
                                           // Title for Services
                                           if (data
                                               .claimedServices.isNotEmpty) ...[
-                                            Text(
+                                            const Text(
                                               'Services', // Title for Services section
                                               style: TextStyle(
                                                 fontSize: 18.0,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                                 height:
                                                     10.0), // Space between title and list
                                             ListView.builder(
                                               shrinkWrap:
                                                   true, // Allows ListView to take only the needed space
                                               physics:
-                                                  NeverScrollableScrollPhysics(), // Disable internal scrolling
+                                                  const NeverScrollableScrollPhysics(), // Disable internal scrolling
                                               itemCount: data.claimedServices
                                                   .length, // Use dynamic length of claimedServices
                                               itemBuilder: (context, index) {
@@ -243,9 +192,9 @@ class ClaimResults extends GetView<CustomerProfileController> {
                                                 return ListTile(
                                                   leading: GestureDetector(
                                                     onTap: () {
-                                                      Dialog(); // Define what happens when tapped
+                                                      const Dialog(); // Define what happens when tapped
                                                     },
-                                                    child: CircleAvatar(
+                                                    child: const CircleAvatar(
                                                       child: Icon(
                                                           Icons.report_sharp,
                                                           color: Colors.blue),
@@ -259,7 +208,7 @@ class ClaimResults extends GetView<CustomerProfileController> {
                                               },
                                             ),
                                             // Space between Services and the Button
-                                            SizedBox(height: 10.0),
+                                            const SizedBox(height: 10.0),
 
                                             // ElevatedButton to report to grievance
                                             Center(
@@ -270,7 +219,7 @@ class ClaimResults extends GetView<CustomerProfileController> {
                                                   // You can navigate, show a dialog, or call a method
                                                   reportToGrievance();
                                                 },
-                                                child: Text('Report'),
+                                                child: const Text('Report'),
                                               ),
                                             ),
                                           ],
@@ -289,6 +238,54 @@ class ClaimResults extends GetView<CustomerProfileController> {
                         },
                       );
                     },
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const HeroIcon(
+                              HeroIcons.calendar, // Use the dollar sign icon
+                              size: 20.0,               // Adjust size as needed
+                              color: Colors.green,      // Optional: Set icon color
+                            ),
+                            const SizedBox(width: 8),          // Add spacing between icon and text
+                            Text(
+                              results[index].dateClaimed.toString().substring(0, 10), // Claimed amount
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 15.0,),
+                        Row(
+                          children: [
+                            const HeroIcon(
+                              HeroIcons.currencyDollar, // Use the dollar sign icon
+                              size: 20.0,               // Adjust size as needed
+                              color: Colors.green,      // Optional: Set icon color
+                            ),
+                            const SizedBox(width: 8),          // Add spacing between icon and text
+                            Text(
+                              results[index].claimed, // Claimed amount
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(width: 8),          // Add spacing between text elements
+                            Text(
+                              "Stage: ${results[index].status}", // Claim status
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

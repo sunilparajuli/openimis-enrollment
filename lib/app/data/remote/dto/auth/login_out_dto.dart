@@ -78,6 +78,7 @@ class LoginOutDto implements IDto {
         insureeInfo: insureeInfo ?? this.insureeInfo,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['refresh'] = refresh;

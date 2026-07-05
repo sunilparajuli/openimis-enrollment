@@ -19,11 +19,11 @@ class ProfileBody extends GetView<CustomerProfileController> {
           asset: "assets/empty.json",
           assetHeight: 200.h,
         ),
-        loading: () => Center(
+        loading: () => const Center(
           child: CircularProgressIndicator(),
         ),
         success: (data) => SingleChildScrollView(
-          padding: EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -37,7 +37,7 @@ class ProfileBody extends GetView<CustomerProfileController> {
                     // Add your custom action here
                     Get.snackbar('Action', 'Additional actions can go here.');
                   },
-                  child: Text('Take Action'),
+                  child: const Text('Take Action'),
                 ),
               ),
             ],

@@ -6,13 +6,13 @@ import '../../../../data/remote/dto/search/search_out_dto.dart';
 class FamilyMemberDetails extends StatelessWidget {
   final List<FamilyDto> families;
 
-  const FamilyMemberDetails({required this.families});
+  const FamilyMemberDetails({super.key, required this.families});
 
   @override
   Widget build(BuildContext context) {
     int totalMembers = families.fold(
       0,
-          (sum, family) => sum + (family.members!.length ?? 0),
+          (sum, family) => sum + (family.members?.length ?? 0),
     );
 
     return Column(
@@ -26,7 +26,7 @@ class FamilyMemberDetails extends StatelessWidget {
         Table(
           border: TableBorder.all(),
           children: [
-            TableRow(children: [
+            const TableRow(children: [
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -51,23 +51,23 @@ class FamilyMemberDetails extends StatelessWidget {
             ...families.expand((family) => family.members?.map<TableRow>((member) {
               return TableRow(children: [
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member.fullname ?? 'N/A'),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member.dateOfBirth ?? 'N/A'),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member.insureeGender ?? 'N/A'),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member.firstServicePoint ?? 'N/A'),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(member.policyStatus ?? 'N/A'),
                 ),
               ]);

@@ -26,7 +26,7 @@ class _PublicContributionState extends State<PublicContribution> {
   void _showPaymentOptionBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       builder: (context) {
@@ -109,7 +109,7 @@ class _PublicContributionState extends State<PublicContribution> {
               } else if (selectedPaymentMethod.value == 'Online') {
                 return buildOnlinePaymentSection();
               } else {
-                return  Column(
+                return  const Column(
                   children: [
                     Center(
                       child: Text('No Payment Method Selected'),
@@ -139,11 +139,11 @@ class _PublicContributionState extends State<PublicContribution> {
                       onPressed: () {
                         print("Submit Button Pressed");
                       },
-                      child: const Text('Submit'),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         backgroundColor: Colors.blue,
                       ),
+                      child: const Text('Submit'),
                     ),
                   ),
                 ),
@@ -265,7 +265,7 @@ class _PublicContributionState extends State<PublicContribution> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EsewaEpay()),
+                    MaterialPageRoute(builder: (context) => const EsewaEpay()),
                   );
                 },
                 icon: const Icon(Icons.account_balance_wallet),
@@ -288,7 +288,7 @@ class FamilyMemberTable extends StatelessWidget {
   final List<Map<String, dynamic>> enrollments;
   final PublicEnrollmentController controller;
 
-   FamilyMemberTable({required this.enrollments, required this.controller});
+   const FamilyMemberTable({super.key, required this.enrollments, required this.controller});
 
   @override
   Widget build(BuildContext context) {

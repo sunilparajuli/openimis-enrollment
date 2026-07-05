@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../data/remote/base/status.dart';
-import '../../../widgets/dialogs.dart';
+
 
 
 
@@ -51,15 +51,7 @@ class HomeController extends GetxController {
     _loadHome();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
 
 
@@ -79,36 +71,7 @@ class HomeController extends GetxController {
 
   }
 
-  void _onRetry() async {
-    return;
-    // if (positions is Failure) {
-    //   await getPositions();
-    //   showDialogOnFailure();
-    // } else if (featuredJobs is Failure) {
-    //   await getFeaturedJobs();
-    //   showDialogOnFailure();
-    // } else if (recentJobs is Failure) {
-    //   await getRecentJobs();
-    //   showDialogOnFailure();
-    // }
-  }
 
-  void showDialogOnFailure() {
-
-  }
-
-  void _getErrDialog(String msg) {
-    if (Get.isDialogOpen!) return;
-    Dialogs.spaceDialog(
-      description: msg,
-      dismissOnBackKeyPress: false,
-      dismissOnTouchOutside: false,
-      btnOkOnPress: () {
-        Get.back();
-        _onRetry();
-      },
-    );
-  }
 
 
 }

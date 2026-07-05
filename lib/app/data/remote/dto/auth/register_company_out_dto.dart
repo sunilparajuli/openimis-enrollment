@@ -24,6 +24,7 @@ class RegisterCompanyOutDto implements IDto {
         company: company ?? this.company,
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (token != null) {

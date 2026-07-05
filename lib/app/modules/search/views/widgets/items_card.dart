@@ -49,7 +49,7 @@ class SearchItem extends StatelessWidget {
                     subtitle,
                     style: GoogleFonts.poppins(
                       fontSize: 13.sp,
-                      color: Get.theme.colorScheme.secondary.withOpacity(0.75),
+                      color: Get.theme.colorScheme.secondary.withValues(alpha: 0.75),
                     ),
                   )
                 ],

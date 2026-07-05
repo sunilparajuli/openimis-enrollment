@@ -10,6 +10,7 @@ import '../../../../../utils/validators.dart';
 import '../../../../../widgets/custom_text_field.dart';
 import '../../../controllers/auth_controller.dart';
 
+// ignore: must_be_immutable
 class EmployeeForm extends GetView<AuthController> {
   EmployeeForm({Key? key}) : super(key: key);
   Timer? _debounce;

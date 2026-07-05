@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:openimis_app/app/modules/enrollment/views/widgets/family_form.dart';
 import 'package:openimis_app/app/modules/enrollment/views/widgets/location_dropdowns.dart';
-import '../../../../widgets/custom_bottom_sheet.dart';
-import '../../../../widgets/custom_draggable_bottom_sheet.dart';
 import '../../controller/enrollment_controller.dart';
 
 import 'health_service_provider.dart';
@@ -14,7 +12,7 @@ class EnrollmentForm extends StatelessWidget {
   final int? enrollmentId;
   final String? chfid;
   final EnrollmentController controller = Get.put(EnrollmentController());
-  EnrollmentForm({this.enrollmentId, this.chfid});
+  EnrollmentForm({super.key, this.enrollmentId, this.chfid});
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +67,10 @@ class EnrollmentForm extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Obx(() {
                 return controller.photo.value == null
-                    ? Stack()
+                    ? const Stack()
                     : Column(
                         children: [
                           Image.file(
@@ -81,13 +79,13 @@ class EnrollmentForm extends StatelessWidget {
                             height: enrollmentId == null ? 100 : 50,
                           ),
                           IconButton(
-                            icon: Icon(Icons.edit, size: 30),
+                            icon: const Icon(Icons.edit, size: 30),
                             onPressed: controller.pickAndCropPhoto,
                           ),
                         ],
                       );
               }),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Head CHFID Field with QR Code Scanner
 
               Row(
@@ -138,7 +136,7 @@ class EnrollmentForm extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Form Fields
               Table(
                 columnWidths: const {
@@ -196,35 +194,35 @@ class EnrollmentForm extends StatelessWidget {
                       'Other',
                       'Spouse'
                     ]),
-                    SizedBox.shrink()
+                    const SizedBox.shrink()
                   ]),
                 ],
               ),
               HealthServiceProviderDropdown(),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               Obx(() {
                 return controller.newEnrollment.value
                     ? Padding(
-                        padding: EdgeInsets.all(1),
+                        padding: const EdgeInsets.all(1),
                         child: Column(
                           children: [
-                            Text("Location"),
-                            SizedBox(
+                            const Text("Location"),
+                            const SizedBox(
                               height: 10,
                             ),
                             BuildDropdowns(
                               controller: controller,
                             ),
-                            Text("Family"),
-                            SizedBox(
+                            const Text("Family"),
+                            const SizedBox(
                               height: 10,
                             ),
                             if (enrollmentId == null) FamilyForm(),
                           ],
                         ))
-                    : Text("");
+                    : const Text("");
               }),
             ],
           ),
@@ -241,8 +239,8 @@ class EnrollmentForm extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           labelText: labelText,
-          border: OutlineInputBorder(),
-          errorStyle: TextStyle(color: Colors.red),
+          border: const OutlineInputBorder(),
+          errorStyle: const TextStyle(color: Colors.red),
         ),
         keyboardType: keyboardType,
         validator: validator,
@@ -262,7 +260,7 @@ class EnrollmentForm extends StatelessWidget {
           },
           decoration: InputDecoration(
             labelText: labelText,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
           items: items.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
@@ -283,8 +281,8 @@ class EnrollmentForm extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           labelText: labelText,
-          border: OutlineInputBorder(),
-          errorStyle: TextStyle(color: Colors.red),
+          border: const OutlineInputBorder(),
+          errorStyle: const TextStyle(color: Colors.red),
         ),
         readOnly: true,
         onTap: () async {

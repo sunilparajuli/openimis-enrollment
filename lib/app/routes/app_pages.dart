@@ -3,8 +3,6 @@ import 'package:openimis_app/app/modules/root/views/widgets/notices.dart';
 
 
 import '../modules/Insuree/views/insuree_profile.dart';
-import '../modules/Insuree/views/insuree_profile_details.dart';
-import '../modules/Insuree/views/profile_body.dart';
 import '../modules/Organization/bindings/company_profile_binding.dart';
 import '../modules/Organization/views/company_profile_view.dart';
 import '../modules/auth/bindings/auth_binding.dart';
@@ -92,12 +90,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PUBLIC_ENROLLMENT,
-      page: () =>  PublicEnrollmentView(),
+      page: () =>  const PublicEnrollmentView(),
 
     ),
     GetPage(
       name: _Paths.PROFILE,
-      page: () =>  ProfileView(),
+      page: () =>  const ProfileView(),
       binding: CustomerProfileBinding(),
 
     ),

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/enrollment_controller.dart';
 
 class Contribution extends StatefulWidget {
-  Contribution(EnrollmentController enrollmentController);
+  const Contribution(EnrollmentController enrollmentController, {super.key});
 
   @override
   _ContributionState createState() => _ContributionState();
@@ -26,7 +25,7 @@ class _ContributionState extends State<Contribution> {
         children: [
           TextField(
             controller: _amountPaidController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Amount Paid',
             ),
             onChanged: (e)  {
@@ -36,7 +35,7 @@ class _ContributionState extends State<Contribution> {
           Obx(() {
             return TextField(
               controller: _voucherNumberController..text = enrollmentController.voucherNumber.value,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Voucher Number',
               ),
               onChanged: (e) {

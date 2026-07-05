@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/HospitalDto.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/LocationDto.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/MembershipDto.dart';

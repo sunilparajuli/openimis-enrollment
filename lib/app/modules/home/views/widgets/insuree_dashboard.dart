@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:openimis_app/app/modules/root/views/widgets/carousel.dart';
 
 class InsureeDashboardScreen extends StatelessWidget {
@@ -24,6 +23,8 @@ class InsureeDashboardScreen extends StatelessWidget {
     },
   ];
 
+  InsureeDashboardScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SliverList(
@@ -42,7 +43,7 @@ class InsureeDashboardScreen extends StatelessWidget {
                     itemCount: news.length, // Number of items in news list
                     itemBuilder: (context, index) {
                       return Card(
-                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        margin: const EdgeInsets.symmetric(vertical: 8.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
                         ),
@@ -73,25 +74,25 @@ class InsureeDashboardScreen extends StatelessWidget {
                                     children: [
                                       Text(
                                         news[index]['title']!,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 22.0,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      SizedBox(height: 8.0),
+                                      const SizedBox(height: 8.0),
                                       Text(
                                         news[index]['content']!,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black54,
                                         ),
                                       ),
-                                      SizedBox(height: 16.0),
+                                      const SizedBox(height: 16.0),
                                       ElevatedButton(
                                         onPressed: () {
                                           Navigator.pop(context); // Close the bottom sheet
                                         },
-                                        child: Text('Close'),
+                                        child: const Text('Close'),
                                       ),
                                     ],
                                   ),

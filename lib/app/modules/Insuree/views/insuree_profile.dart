@@ -12,18 +12,18 @@ class ProfileView extends GetView<CustomerProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Get.theme.colorScheme.background,
+      backgroundColor: Get.theme.colorScheme.surface,
       resizeToAvoidBottomInset: false,
-      appBar: OpenIMISAppBar(title: "Profile",),
+      appBar: const OpenIMISAppBar(title: "Profile",),
 
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: Get.theme.colorScheme.background,
+          statusBarColor: Get.theme.colorScheme.surface,
           statusBarIconBrightness: Brightness.dark,
           systemNavigationBarColor: Colors.white,
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
-        child:  SafeArea(child: ProfileBody()),
+        child:  const SafeArea(child: ProfileBody()),
       ),
     );
   }

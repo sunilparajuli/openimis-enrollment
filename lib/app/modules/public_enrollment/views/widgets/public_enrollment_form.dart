@@ -11,7 +11,7 @@ class PublicEnrollmentForm extends StatelessWidget {
   final String? chfid;
   final PublicEnrollmentController controller =
       Get.put(PublicEnrollmentController());
-  PublicEnrollmentForm({this.enrollmentId, this.chfid});
+  PublicEnrollmentForm({super.key, this.enrollmentId, this.chfid});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class PublicEnrollmentForm extends StatelessWidget {
             children: [
               Obx(() {
                 return controller.photo.value == null
-                    ? Stack()
+                    ? const Stack()
                     : Column(
                         children: [
                           Image.file(
@@ -34,13 +34,13 @@ class PublicEnrollmentForm extends StatelessWidget {
                             height: enrollmentId == null ? 100 : 50,
                           ),
                           IconButton(
-                            icon: Icon(Icons.edit, size: 30),
+                            icon: const Icon(Icons.edit, size: 30),
                             onPressed: controller.pickAndCropPhoto,
                           ),
                         ],
                       );
               }),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Head CHFID Field with QR Code Scanner
 
               Row(
@@ -68,7 +68,7 @@ class PublicEnrollmentForm extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Form Fields
               Table(
                 columnWidths: const {
@@ -79,12 +79,12 @@ class PublicEnrollmentForm extends StatelessWidget {
                   TableRow(children: [
                     TextFormField(
                       controller: controller.nationalIdController,
-                      decoration: InputDecoration(labelText: 'National ID'),
+                      decoration: const InputDecoration(labelText: 'National ID'),
                       keyboardType: TextInputType.text,
                       onChanged: (value) => controller.nationalId.value = value.trim(),
                     ),
                     buildTextFormField(controller.headChfidController,
-                        controller.enrollments.length==0 ? 'head_chfid'.tr : 'chfid', TextInputType.number, (value) {
+                        controller.enrollments.isEmpty ? 'head_chfid'.tr : 'chfid', TextInputType.number, (value) {
                           if (value == null || value.isEmpty) {
                             return 'head_chfid_is_required'.tr;
                           }
@@ -163,15 +163,15 @@ class PublicEnrollmentForm extends StatelessWidget {
                       'Other',
                       'Spouse'
                     ]),
-                    SizedBox.shrink()
+                    const SizedBox.shrink()
                   ]),
                 ],
               ),
               HealthServiceProviderDropdown(),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Padding(
-                  padding: EdgeInsets.all(1),
+                  padding: const EdgeInsets.all(1),
                   child: Column(
                     children: [
                       // Text("Location"),
@@ -181,8 +181,8 @@ class PublicEnrollmentForm extends StatelessWidget {
                       // BuildDropdowns(
                       //   controller: controller,
                       // ),
-                      Text("Family"),
-                      SizedBox(
+                      const Text("Family"),
+                      const SizedBox(
                         height: 10,
                       ),
                       if (enrollmentId == null) PublicFamilyForm(),
@@ -203,8 +203,8 @@ class PublicEnrollmentForm extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           labelText: labelText,
-          border: OutlineInputBorder(),
-          errorStyle: TextStyle(color: Colors.red),
+          border: const OutlineInputBorder(),
+          errorStyle: const TextStyle(color: Colors.red),
         ),
         keyboardType: keyboardType,
         validator: validator,
@@ -224,7 +224,7 @@ class PublicEnrollmentForm extends StatelessWidget {
           },
           decoration: InputDecoration(
             labelText: labelText,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
           items: items.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
@@ -245,8 +245,8 @@ class PublicEnrollmentForm extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           labelText: labelText,
-          border: OutlineInputBorder(),
-          errorStyle: TextStyle(color: Colors.red),
+          border: const OutlineInputBorder(),
+          errorStyle: const TextStyle(color: Colors.red),
         ),
         readOnly: true,
         onTap: () async {

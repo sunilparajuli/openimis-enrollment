@@ -1,6 +1,5 @@
 import 'package:dio/src/response.dart';
 
-import '../../../../modules/enrollment/controller/LocationDto.dart';
 import '../../api/api_routes.dart';
 import '../../api/dio_client.dart';
 import 'i_enrollment_service.dart';
@@ -42,7 +41,7 @@ class EnrollmentService implements IEnrollmentService<IDto> {
   @override
   Future<Response> membership_card({required String uuid}) async {
     try {
-      return await dioClient.get(ApiRoutes.MEMBERSHIP_CARD+'/${uuid}');
+      return await dioClient.get('${ApiRoutes.MEMBERSHIP_CARD}/$uuid');
     } catch (e) {
       rethrow;
     }

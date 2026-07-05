@@ -39,7 +39,7 @@ class CustomChip extends StatelessWidget {
         onPressed: onPressed,
         backgroundColor: isActive
             ? Get.theme.colorScheme.primary
-            : Get.theme.backgroundColor,
+            : Get.theme.colorScheme.surface,
       ),
     );
   }

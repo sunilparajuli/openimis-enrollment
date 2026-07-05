@@ -50,10 +50,6 @@ class CustomSaveButtonState extends State<CustomSaveButton>
     super.didUpdateWidget(oldWidget);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

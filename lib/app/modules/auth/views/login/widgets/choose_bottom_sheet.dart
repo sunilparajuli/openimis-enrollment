@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heroicons/heroicons.dart';
 
-import '../../../../../core/values/strings.dart';
 import '../../../../../domain/enums/user_type.dart';
 import '../../../controllers/auth_controller.dart';
 import 'custom_choose_button.dart';
@@ -21,7 +20,7 @@ class ChooseBottomSheetBody extends GetView<AuthController> {
           style: GoogleFonts.poppins(
             fontSize: 20.sp,
             fontWeight: FontWeight.w700,
-            color: Get.theme.colorScheme.onBackground,
+            color: Get.theme.colorScheme.onSurface,
           ),
         ),
         SizedBox(height: 42.h),

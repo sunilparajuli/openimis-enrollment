@@ -6,7 +6,7 @@ import '../../../../data/remote/dto/search/search_out_dto.dart';
 class PolicyDetails extends StatelessWidget {
   final List<PolicyDto> policies;
 
-  const PolicyDetails({required this.policies});
+  const PolicyDetails({super.key, required this.policies});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class PolicyDetails extends StatelessWidget {
         Table(
           border: TableBorder.all(),
           children: [
-            TableRow(children: [
+            const TableRow(children: [
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text('Enrollment Date', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -45,24 +45,24 @@ class PolicyDetails extends StatelessWidget {
             ]),
             ...policies.map((policy) => TableRow(children: [
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(policy.enrollmentDate?.toString() ?? "N/A"),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(policy.startDate?.toString() ?? "N/A"),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(policy.effectiveDate?.toString() ?? 'N/A'),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(policy.expiryDate?.toString() ?? "N/A"),
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(policy!.policyStatus ?? 'NA'),
+                padding: const EdgeInsets.all(8.0),
+                child: Text(policy.policyStatus ?? 'NA'),
               ),
             ])),
           ],

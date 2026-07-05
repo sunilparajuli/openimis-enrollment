@@ -11,7 +11,7 @@ class MembershipCard extends StatelessWidget {
   final String qrCodeData;
   final String logoUrl;
 
-  MembershipCard({
+  const MembershipCard({super.key, 
     required this.fullName,
     required this.dateOfBirth,
     required this.gender,
@@ -27,7 +27,7 @@ class MembershipCard extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       elevation: 2.0,
-      margin: EdgeInsets.all(2.0),
+      margin: const EdgeInsets.all(2.0),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Row(
@@ -45,45 +45,45 @@ class MembershipCard extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text(
                     fullName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4.0),
+                  const SizedBox(height: 4.0),
                   Text(
                     dateOfBirth,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
                     'Gender: $gender',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                     ),
                   ),
                   Text(
                     'Service Point: $firstServicePoint',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
                     'Policy Status: $policyStatus',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(width: 20.0),
+            const SizedBox(width: 20.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -96,7 +96,7 @@ class MembershipCard extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 QrImageView(
                   data: qrCodeData,
                   version: QrVersions.auto,

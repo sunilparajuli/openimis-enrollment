@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:openimis_app/app/modules/enrollment/controller/enrollment_controller.dart';
-import 'package:openimis_app/app/modules/enrollment/views/widgets/submit_botton_sheet.dart';
-import '../../../../utils/functions.dart';
 import '../../../../widgets/openimis_appbar.dart';
 import 'enrollment_form.dart';
 import 'enrollment_list.dart';
@@ -62,10 +60,10 @@ class Body extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text('No'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red,
                                 ),
+                                child: const Text('No'),
                               ),
                             ],
                           ),
@@ -100,8 +98,8 @@ class Body extends StatelessWidget {
             Obx(() {
               return controller.enrollmentState.when(
                   idle: () => EnrollmentForm(),
-                  loading: () => Center(child: CircularProgressIndicator()),
-                  failure: (reason) => Text("error"),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  failure: (reason) => const Text("error"),
                   success: (data) {
                     return (EnrollmentForm());
                     // Default widget when none of the states match

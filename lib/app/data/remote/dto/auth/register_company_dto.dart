@@ -47,6 +47,7 @@ class RegisterCompanyDto implements IDto {
         group: group ?? this.group
       );
 
+  @override
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['name'] = name;

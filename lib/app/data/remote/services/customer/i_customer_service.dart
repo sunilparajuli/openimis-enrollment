@@ -1,5 +1,4 @@
 import 'package:dio/src/response.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 abstract class ICustomerService {
   Future<Response> toggleSave({

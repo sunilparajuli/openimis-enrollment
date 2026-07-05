@@ -32,7 +32,7 @@ class ProfileHeader extends GetView<CompanyProfileController> {
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w700,
               fontSize: 16.sp,
-              color: Get.theme.colorScheme.onBackground,
+              color: Get.theme.colorScheme.onSurface,
             ),
           ),
         ],

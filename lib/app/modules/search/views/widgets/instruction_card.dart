@@ -9,24 +9,24 @@ class InstructionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4.0,
-      margin: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.search, // Magnifier glass icon
                   size: 48.0, // Big size
                   color: Colors.blue,
                 ),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 Expanded(
                   child: Text(
                     'search_instruction'.tr,
@@ -38,8 +38,8 @@ class InstructionCard extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(width: 16.0),
-                Icon(
+                const SizedBox(width: 16.0),
+                const Icon(
                   Icons.qr_code_scanner, // QR icon
                   size: 48.0, // Big size
                   color: Colors.green,

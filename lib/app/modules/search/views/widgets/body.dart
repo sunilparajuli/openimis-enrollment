@@ -4,9 +4,7 @@ import 'package:get/get.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:openimis_app/app/core/values/strings.dart';
 
-import '../../../../widgets/custom_text_field.dart';
 import '../../../auth/controllers/auth_controller.dart';
-import '../../../enrollment/controller/enrollment_controller.dart';
 import '../../controllers/search_controller.dart';
 import 'search_items.dart';
 
@@ -26,7 +24,7 @@ class Body extends GetView<CSearchController> {
               Row(
                 children: [
                   authController.isInsuree()
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Expanded(
                           child: Column(
                             children: [
@@ -35,20 +33,20 @@ class Body extends GetView<CSearchController> {
                                 controller: controller.searchController,
                                 autofocus: false,
                                 decoration: InputDecoration(
-                                  hintText: '${AppStrings.SEARCH_HINT}'.tr,
+                                  hintText: AppStrings.SEARCH_HINT.tr,
                                   prefixIcon:
-                                      HeroIcon(HeroIcons.magnifyingGlass),
+                                      const HeroIcon(HeroIcons.magnifyingGlass),
                                   suffixIcon: GestureDetector(
                                     onTap: () => controller.clearSearch(),
-                                    child: HeroIcon(HeroIcons.xMark),
+                                    child: const HeroIcon(HeroIcons.xMark),
                                   ),
                                 ),
                                 maxLines: 1,
                                 onChanged: (_) => controller.getSearchResult(),
-                              ) : SizedBox(),
+                              ) : const SizedBox(),
                               // The QR Code IconButton
                               IconButton(
-                                icon: HeroIcon(HeroIcons.qrCode),
+                                icon: const HeroIcon(HeroIcons.qrCode),
                                 onPressed: () async {
                                   await controller
                                       .scanQRCode(controller.searchController);

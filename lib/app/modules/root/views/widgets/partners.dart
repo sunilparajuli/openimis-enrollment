@@ -21,7 +21,7 @@ class PartnersPage extends StatelessWidget {
           final partners = controller.supportedPartners;
           return ListView.separated(
             itemCount: partners.length,
-            separatorBuilder: (context, index) => SizedBox(height: 10),
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final partner = partners[index];
               return Container(
@@ -31,7 +31,7 @@ class PartnersPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       blurRadius: 4,
                       spreadRadius: 2,
                     ),
@@ -51,12 +51,12 @@ class PartnersPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     // Partner Name
                     Expanded(
                       child: Text(
                         partner['name'] ?? '',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

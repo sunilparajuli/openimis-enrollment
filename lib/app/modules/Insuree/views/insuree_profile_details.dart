@@ -13,7 +13,7 @@ class PatientDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(10.0), // Consistent padding for the entire widget
+      padding: const EdgeInsets.all(10.0), // Consistent padding for the entire widget
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -53,12 +53,12 @@ class PatientDetailsScreen extends StatelessWidget {
           SizedBox(height: 20.h),
 
           // Other Details Section
-          PatientInfoCard(
+          const PatientInfoCard(
             title: "Is Head of Household",
             value: "Yes", // Static value, replace with dynamic logic if needed
           ),
           SizedBox(height: 10.h),
-          PatientInfoCard(
+          const PatientInfoCard(
             title: "Card Issued",
             value: "Yes", // Static value, replace with dynamic logic if needed
           ),

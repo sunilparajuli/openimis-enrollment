@@ -22,7 +22,7 @@ class Body extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 40.sp,
               fontWeight: FontWeight.w700,
-              color: Get.theme.colorScheme.onBackground,
+              color: Get.theme.colorScheme.onSurface,
             ),
           ),
           Text(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import 'help_screen.dart';
 
@@ -11,12 +10,14 @@ class DashboardScreen extends StatelessWidget {
     DashboardItem(name: 'Help', icon: Icons.help),
   ];
 
+  DashboardScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.all(16.0),
       sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 16.0,
           mainAxisSpacing: 16.0,
@@ -56,7 +57,7 @@ class DashboardCard extends StatelessWidget {
       elevation: 4.0,
       child: InkWell(
         onTap: () {
-          Get.to(() => HelpScreen());
+          Get.to(() => const HelpScreen());
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -68,10 +69,10 @@ class DashboardCard extends StatelessWidget {
                 size: 48.0,
                 color: Theme.of(context).primaryColor,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Text(
                 item.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),

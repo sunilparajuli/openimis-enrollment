@@ -29,6 +29,7 @@ class Dialogs {
       padding: EdgeInsets.only(bottom: 12.w),
       btnOkColor: Get.theme.colorScheme.primary,
     ).show();
+    return null;
   }
 
   static Future<bool>? errorDialog({
@@ -56,7 +57,7 @@ class Dialogs {
       titleTextStyle: GoogleFonts.poppins(
         fontSize: 16.sp,
         fontWeight: FontWeight.w600,
-        color: Get.theme.colorScheme.onBackground,
+        color: Get.theme.colorScheme.onSurface,
       ),
       descTextStyle: GoogleFonts.poppins(
         fontSize: 13.sp,
@@ -69,6 +70,7 @@ class Dialogs {
         fontWeight: FontWeight.w700,
       ),
     ).show();
+    return null;
   }
 
   static Future<bool>? infoDialog({
@@ -91,6 +93,7 @@ class Dialogs {
       btnCancelOnPress: btnCancelOnPress,
       btnOkOnPress: btnOkOnPress,
     ).show();
+    return null;
   }
 
   static Future<bool>? successDialog({
@@ -109,6 +112,7 @@ class Dialogs {
       btnOkOnPress: btnOkOnPress,
       headerAnimationLoop: false,
     ).show();
+    return null;
   }
 
   static Future<bool>? questionDialog({
@@ -136,7 +140,7 @@ class Dialogs {
       titleTextStyle: GoogleFonts.poppins(
         fontSize: 16.sp,
         fontWeight: FontWeight.w600,
-        color: Get.theme.colorScheme.onBackground,
+        color: Get.theme.colorScheme.onSurface,
       ),
       descTextStyle: GoogleFonts.poppins(
         fontSize: 13.sp,
@@ -149,6 +153,7 @@ class Dialogs {
         fontWeight: FontWeight.w700,
       ),
     ).show();
+    return null;
   }
 
   static Future<bool>? spaceDialog({
@@ -185,7 +190,7 @@ class Dialogs {
         titleStyle: GoogleFonts.poppins(
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
-          color: Get.theme.colorScheme.onBackground,
+          color: Get.theme.colorScheme.onSurface,
         ),
         descriptionStyle: GoogleFonts.poppins(
           fontSize: 13.sp,
@@ -194,5 +199,6 @@ class Dialogs {
         ),
       ),
     ).show();
+    return null;
   }
 }
